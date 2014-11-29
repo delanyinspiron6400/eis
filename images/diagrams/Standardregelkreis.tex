@@ -1,0 +1,15 @@
+\begin{tikzpicture}[x=1.6cm,y=1.6cm]
+    \node(diffry)[sum]{};
+    \node(Regler)[sysblock,right=.5 of diffry]{$R(s)$};
+    \node(Strecke)[sysblock,right=.5 of Regler]{$P(s)$};
+    \node(branchy)[branch,right=.5 of Strecke]{};
+    \path(branchy.east) ++(.5,0) coordinate (right);
+    \path(diffry.west) ++(-0.5,0) coordinate (left);
+
+    \path[->] (left) edge node [above,near start] {$r$} (diffry)
+    (diffry) edge node [above] {$e$} (Regler)
+    (Regler) edge (Strecke)
+    (branchy) edge node[above,near end] {$y$} (right);
+    \path (Strecke) edge (branchy);
+    \draw[every edge,->] (branchy) |- ++(0,-0.5) -| node[left,pos=0.90] {$-$} (diffry);
+\end{tikzpicture}

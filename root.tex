@@ -1,0 +1,274 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[a4paper, 10 pt, conference]{ieeeconf}
+\usepackage{stylesheet}
+
+
+%-----------------------------------------------------------
+%-
+%-  Titel
+%-
+%-----------------------------------------------------------
+\title{\LARGE \bf Summary of ``Einführung in die Informationssicherheit''}
+
+%-----------------------------------------------------------
+%-
+%-  Authors
+%-
+%-----------------------------------------------------------
+\author{Martin Winter}
+
+%-----------------------------------------------------------
+%-
+%-  References in references.bib
+%-
+%-----------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\pagestyle{empty}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-----------------------------------------------------------
+%-
+%-  abstract
+%-
+%-----------------------------------------------------------
+\begin{abstract}
+
+This document should serve as a summary of the necessary information given in the lecture ``Einführung in die Informationssicherheit''
+
+\end{abstract}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%-----------------------------------------------------------
+%-
+%-  Introduction
+%-
+%-----------------------------------------------------------
+\section{ABBREVIATIONS and STANDARD NOTATION}
+\begin{table}[h!]
+    \begin{center}
+    \begin{tabular}{c c} % right-aligned, column separation by =-sign (and some whitespace to the left and to the right), left-aligned, centered, siunit: aligned at comma
+        \toprule
+       Abbreviation & Notation \\
+        \midrule
+        AES & Advanced Encryption Standard \\
+        CBC & Cipher Block Chaining mode \\
+        CFB & Cipher FeedBack mode\\
+        CRL & Certificate Revocation List\\
+        DES & Data Encryption Standard \\
+        DHP & Diffie-Hellman problem \\
+        DLP & Discrete logarithm problem \\
+        DN & Distinguished Name \\
+        DPA & Differential Power Analysis \\
+        DSA & Digital Signature Algorithm \\
+        ECB & Electronic Codebook mode \\
+        ECDLP & Elliptic Curve Discrete Logarithm Problem \\
+        ECDSA & Elliptic Curve Digital Signature Algorithm \\
+        GDLP & Generlized discrete Logarithm Problem \\
+        HW & Hamming Weight \\
+        IDS & Intrusion Detection System \\
+        IFP & Integer Factorization Problem \\
+        LSB & Least Significant Bit \\
+        MAC & Message Authentication Code \\
+        MDC & Modification Detection Code \\
+        MSB & Most Significant Bit \\
+        OFB & Output Feedback mode \\
+        OID & Object Identifier \\
+        PGP & Pretty Good Privacy \\
+        PKI & Public Key Infrastructure \\
+        RSA & Rivest-Shamir-Adleman encryption scheme \\
+        SCA & Side-Channel Attack \\
+        SPA & Simple Power Analysis \\
+        SSCA & Simple Side-Channel Attack \\
+        DSCA & Differential Side-Channel Attack \\
+        \bottomrule
+    \end{tabular}
+    \end{center}
+\end{table}
+
+\pagebreak
+
+\section{BASIC CRYPTOLOGIC PRINCIPLES}
+Because of the rise of digital communication, the value of information keeps growing, while it is subject to a large number of threats. 
+This brings up the need to protect this information, hence Cryptography is the science of protecting information. 
+A \textbf{cryptographic algorithm} is a \textbf{mathematical function}, that uses a \textbf{key} to encipher information, without this key, deciphering wouldn't be possible. 
+\subsection{CIA and Non-repudiation}
+Typically two entities want to \textbf{exchange messages securely} over an \textbf{insecure channel}, the \textbf{adversary} can now try to do several things, including eavesdropping the communication or altering it. 
+\textbf{Eavesdropping} (Abhören) is a threat to the \textbf{confidentiality} of the message, a third member could possible read the content of the message. 
+On the other hand, \textbf{altering} (Verändern) is a threat to the \textbf{integrity} of the message, therefore it is required to \textbf{authenticate} the communicating entities. 
+The last of the security service deals is called \textbf{non-repudiation} (Nicht-Anerkennung), which means, that a sender cannot deny a message was sent, this property cannot be achieved by secret key cryptography alone unfortunately. 
+
+\subsection{Secret Key Cryptography}
+The most important requirement for such algorithms, besides their resistance against attacks, is that the reduction of preformance is minimal. There are three types, which are discussed here
+\begin{itemize}
+\item \textbf{Block Ciphers} : Used to Encrypt Data
+\item \textbf{Stream Ciphers} : Used as alternative
+\item \textbf{MDCs}: Ensure integrity of data
+\item \textbf{MACs}: For authentication
+\end{itemize}
+
+\vspace{0.5cm}
+
+\subsubsection{\textbf{Block Ciphers}}
+are defined as a set of boolean permutations on a \emph{n-bit} vector, this set contains a boolean permutation for each value of a key \emph{k}. 
+It takes an element (from plaintext) and transforms it into an element from ciphertext.
+Such a block cipher usually consists of several transformations, which form the encryption algorithm, those transformations happen several times, the transformation itself is called \emph{round function}, for each round a \emph{round key} $K_i$ is generated from the cipher key. 
+There are mainly two different types of design, the \emph{Feistel ciphers} and the \emph{substitution permutation network (SPN)}. \\
+There are also several modes of operation, whenever a message is longer than the block size, four modes are standardized. 
+The \emph{electronic code book} (ECB) corresponds to the usual use case, the message is split into blocks and each block is encrypted separately with the same key. \\
+In \emph{cipher block chaining} (CBC) each ciphertext block is x-ored with the next plaintext block before encryption. \\
+In the \emph{output feedback} (OFB) mode and the \emph{cipher feedback} (CFB) mode, a keystream is generated and x-ored with the plaintext.
+
+\subsubsection{\textbf{Stream Ciphers}} 
+encrypt individual characters, usually bits, of a plaintext one at a time and use an encryption transformation, which varies with time. 
+In contrast to block ciphers, this encryption not only depends on the key and plaintext, but also on the current state. \\
+\textbf{Synchronous} stream ciphers generate a keystream independently of the plaintext, sender and receiver must therefore be synchronized (same key and same state within that key). \\
+\textbf{Asynchronous} stream cipher is a stream cipher, in which the keystream is generated as a function of the key and a fixed number of previous ciphtertext bits. 
+Because the keystream is dependent on only a few previous ciphertext bits, self-synchronization is possible even if some of the transmitted ciphertext bits are corrupted. 
+
+\subsubsection{\textbf{MDCs}} 
+take an input of arbitrary length and compress it to an output of fixed length, which is called the hash value. 
+It satisfies the following properties
+\begin{itemize}
+\item \emph{preimage resistance}: computationally infeasible to find preimage to given hash value
+\item \emph{2nd preimage resistance}: computationally infeasible to find 2nd preimage
+\item \emph{collision resistance}: computationally infeasible to find two different inputs with same hash value
+\end{itemize}
+Hash functions are used to ensure the integrity of data, data is used as input to the hash function and the output is stored. It is possible to check the input for alteration by simply redoing the computation and comparing it with the original hash value. 
+
+\subsubsection{\textbf{MACs}}
+Hash functions, which involve a secret key, are called MACs (message authentication codes). The output of such a \emph{keyed hash function} is also called MAC, in contrast to MDCs they can also guarantee \textbf{data origin authentication} and \textbf{data integrity}. 
+In order to ensure authenticity of data, an entity computes a MAC on the data using a private key, to verify the authenticity of the data later on, the MAC can be recomputed using the private key. 
+
+\subsection{Public Key Cryptography}
+In public key cryptography, secret keys are \textbf{replaced by keypairs}, consisting of a \textbf{private key}, which must be kept confidential, and a \textbf{public key}, which is openly accessible. \\
+A message, encrypted by the public key, can be decrypted by the private key, this works, because the keys are linked in a mathematical way, such that knowing the public key does not allow to recover the private key, but enable independent encryption/decryption. 
+\vspace{0.5cm}
+\subsubsection{RSA}
+The Rivest-Shamir-Adleman(RSA) algorithm was the first public key encryption algorithm invented. It is based on IFP (Integer factorization problem) and keys are generated as follows: \\
+One selects two large, \textbf{secret prime numbers} $p$ and $q$ and computes the public RSA modules
+\begin{equation*}
+n = p \cdot q
+\end{equation*}
+Then one chooses a public encryption exponent $e$ wich satisfies 
+\begin{equation*}
+gcd \left(e, (p-1)(q-1)\right) = 1 
+\end{equation*}
+gcd stands for \emph{greatest common divisor}. The private key $d$ can be calculated by solving
+\begin{equation*}
+e \cdot d = 1 \ mod \ (p-1)(q-1)
+\end{equation*}
+Hence the \textbf{public key} is the \textbf{pair (e,n)} and the \textbf{private key} is the \textbf{triple (d,p,q)}.\\
+For encryption, the message needs to represented as a number $m < n$, the ciphtertext itself is computed by raising $m$ to the power of $e$
+\begin{equation*}
+c = m^{e} \ mod \ n
+\end{equation*}
+The message can be decrypted by exponentiation like
+\begin{equation}
+m  = c^{d} \ mod \ n
+\end{equation}
+\textbf{Example Key Generation}: \\
+In real applications, p and q should at least be 512 bits!
+\begin{align*}
+p = 5 \quad q = 11 \\
+n = p \cdot q = 55 \\
+(p-1)(q-1) = 40 \\
+\text{Random Number }e = 7 \\
+gcd(e,(p-1)(q-1)) = 1 \\
+d = e^{-1} \equiv 23 \ mod \ 40
+\end{align*}
+The public key is now $(e,n) = (7,55)$ and the private key is $(d,n) = (23,55)$. \\
+\textbf{Example Encryption}: \\
+Encrypt the message M, assuming $M=25$ with public key $(e,n) = (7,55)$. 
+\begin{equation*}
+c = 25 ^{7} \equiv 20 \ mod \ n
+\end{equation*}
+\textbf{Example Decryption}: \\
+Received message is $c = 20 \ mod \ 55$ and private key is $(d,n) = (23,55)$. This leads to 
+\begin{equation*}
+m = 20^{23} \equiv 25 \ mod \ 55
+\end{equation*}
+
+\vspace{0.5cm}
+\subsubsection{El Gamal}
+
+The El Gamal encryption algorithm is based on the DLP, and some public parameters can be shared by a group of users, called \emph{domain parameters}. This parameter is a \textbf{large prime p} (such that $p-1$ is divisible by another prime $q$) and an element $q \in \mathbb{Z}^{*}_{p}$ of order $p$ (or that the order is divisible by $q$. The \textbf{private key} $e$ can then be computed by solving
+\begin{equation*}
+e = g^{d} \ mod \ p
+\end{equation*}
+
+\textbf{Example Key Generation}: \\
+In real applications, p should at least be 1024 bits!
+\begin{align*}
+p = 41 \quad g = 6 \quad d = 17 \\
+e := g^{d} = 6^{17} \equiv 26 \ mod \ 41
+\end{align*}
+The private key $d$ is a random number between 2 and $p-1$. \\
+\textbf{Example Encryption}: \\
+Encrypt the message M, assuming $M=55$ with public key $(e,p,g) = (26,41,6)$. Then, use random number $k=11$ and compute 
+\begin{align*}
+c_1 = g^{k} ? 6^{11} \equiv 28 \ mod \ 41 \\
+c_2 = m\cdot e^{k} = 526^{11} \equiv 19 \ mod \ 41
+\end{align*}
+The encrypted message $(c_1,c_2) = (28,41)$ is now sent. 
+\textbf{Example Decryption}: \\
+Received message is $(c_1,c_2) = (28,41)$ and private key is $(d,p,g) = (17,41,6)$. This leads to 
+\begin{equation*}
+\frac{c_2}{c_1^{d}} = \frac{41}{28^{17}} \equiv 5 \ mod \ 41
+\end{equation*}
+
+\subsection{ECC}
+ECC (Elliptic Curve)is a smooth curve in the so called \emph{Weierstrassform}. 
+Similar to the El Gamal cryptosystem, several public parameters can be shared amongst a groupt of users.
+These parameters are the elliptic curve group itself and the base point, the \textbf{private key} is a chosen integer $d$ and the public key is given by $e=dB$. 
+
+\vspace{0.5cm}
+\subsubsection{Key Agreement}
+A major disadvantage of symmetric key cryptography is 
+
+
+
+
+
+
+
+
+
+
+
+\section{ELECTRONIC SIGNATURES and PUBLIC KEY INFRASTRUCTURES}
+
+\section{ELECTRONIC COMMERCE}
+
+\section{NETWORK SECURITY}
+
+\section{IMPLEMENTATION SECURITY}
+
+\section{OPERATING SYSTEM SECURITY}
+
+\section{PRIVACY}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%-----------------------------------------------------------
+%-
+%-  Appendix
+%-
+%-----------------------------------------------------------
+\section*{APPENDIX}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+\end{document}

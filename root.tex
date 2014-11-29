@@ -95,18 +95,25 @@ This document should serve as a summary of the necessary information given in th
 
 \pagebreak
 
-\section{BASIC CRYPTOLOGIC PRINCIPLES}
+
+%-----------------------------------------------------------
+%-
+%-  BASIC CRYPTOLOGIC PRINCIPLES
+%-
+%-----------------------------------------------------------
+
+\section{\textbf{BASIC CRYPTOLOGIC PRINCIPLES}}
 Because of the rise of digital communication, the value of information keeps growing, while it is subject to a large number of threats. 
 This brings up the need to protect this information, hence Cryptography is the science of protecting information. 
 A \textbf{cryptographic algorithm} is a \textbf{mathematical function}, that uses a \textbf{key} to encipher information, without this key, deciphering wouldn't be possible. 
-\subsection{CIA and Non-repudiation}
+\subsection{\textbf{CIA and Non-repudiation}}
 Typically two entities want to \textbf{exchange messages securely} over an \textbf{insecure channel}, the \textbf{adversary} can now try to do several things, including eavesdropping the communication or altering it. 
 \textbf{Eavesdropping} (Abhören) is a threat to the \textbf{confidentiality} of the message, a third member could possible read the content of the message. 
 On the other hand, \textbf{altering} (Verändern) is a threat to the \textbf{integrity} of the message, therefore it is required to \textbf{authenticate} the communicating entities. 
 The last of the security service deals is called \textbf{non-repudiation} (Nicht-Anerkennung), which means, that a sender cannot deny a message was sent, this property cannot be achieved by secret key cryptography alone unfortunately. 
 
-\subsection{Secret Key Cryptography}
-The most important requirement for such algorithms, besides their resistance against attacks, is that the reduction of preformance is minimal. There are three types, which are discussed here
+\subsection{\textbf{Secret Key Cryptography}}
+The most important requirement for such algorithms, besides their resistance against attacks, is that the reduction of performance is minimal. There are three types, which are discussed here
 \begin{itemize}
 \item \textbf{Block Ciphers} : Used to Encrypt Data
 \item \textbf{Stream Ciphers} : Used as alternative
@@ -147,11 +154,12 @@ Hash functions are used to ensure the integrity of data, data is used as input t
 Hash functions, which involve a secret key, are called MACs (message authentication codes). The output of such a \emph{keyed hash function} is also called MAC, in contrast to MDCs they can also guarantee \textbf{data origin authentication} and \textbf{data integrity}. 
 In order to ensure authenticity of data, an entity computes a MAC on the data using a private key, to verify the authenticity of the data later on, the MAC can be recomputed using the private key. 
 
-\subsection{Public Key Cryptography}
+\subsection{\textbf{Public Key Cryptography}}
 In public key cryptography, secret keys are \textbf{replaced by keypairs}, consisting of a \textbf{private key}, which must be kept confidential, and a \textbf{public key}, which is openly accessible. \\
 A message, encrypted by the public key, can be decrypted by the private key, this works, because the keys are linked in a mathematical way, such that knowing the public key does not allow to recover the private key, but enable independent encryption/decryption. 
 \vspace{0.5cm}
-\subsubsection{RSA}
+\subsubsection{\textbf{RSA}}
+\label{ex:rsa}
 The Rivest-Shamir-Adleman(RSA) algorithm was the first public key encryption algorithm invented. It is based on IFP (Integer factorization problem) and keys are generated as follows: \\
 One selects two large, \textbf{secret prime numbers} $p$ and $q$ and computes the public RSA modules
 \begin{equation*}
@@ -186,6 +194,7 @@ d = e^{-1} \equiv 23 \ mod \ 40
 \end{align*}
 The public key is now $(e,n) = (7,55)$ and the private key is $(d,n) = (23,55)$. \\
 \textbf{Example Encryption}: \\
+\label{ex:rsa}
 Encrypt the message M, assuming $M=25$ with public key $(e,n) = (7,55)$. 
 \begin{equation*}
 c = 25 ^{7} \equiv 20 \ mod \ n
@@ -197,7 +206,7 @@ m = 20^{23} \equiv 25 \ mod \ 55
 \end{equation*}
 
 \vspace{0.5cm}
-\subsubsection{El Gamal}
+\subsubsection{\textbf{El Gamal}}
 
 The El Gamal encryption algorithm is based on the DLP, and some public parameters can be shared by a group of users, called \emph{domain parameters}. This parameter is a \textbf{large prime p} (such that $p-1$ is divisible by another prime $q$) and an element $q \in \mathbb{Z}^{*}_{p}$ of order $p$ (or that the order is divisible by $q$. The \textbf{private key} $e$ can then be computed by solving
 \begin{equation*}
@@ -224,36 +233,167 @@ Received message is $(c_1,c_2) = (28,41)$ and private key is $(d,p,g) = (17,41,6
 \frac{c_2}{c_1^{d}} = \frac{41}{28^{17}} \equiv 5 \ mod \ 41
 \end{equation*}
 
-\subsection{ECC}
+\subsubsection{\textbf{ECC}}
 ECC (Elliptic Curve)is a smooth curve in the so called \emph{Weierstrassform}. 
-Similar to the El Gamal cryptosystem, several public parameters can be shared amongst a groupt of users.
+Similar to the El Gamal cryptosystem, several public parameters can be shared among a group of users.
 These parameters are the elliptic curve group itself and the base point, the \textbf{private key} is a chosen integer $d$ and the public key is given by $e=dB$. 
 
 \vspace{0.5cm}
-\subsubsection{Key Agreement}
-A major disadvantage of symmetric key cryptography is 
+\subsubsection{\textbf{Key Agreement}}
+A major disadvantage of symmetric key cryptography is, that secret keys need to be distributed securely to the users. This problem can be solved using public key cryptography.
+
+
+\vspace{0.5cm}
+\subsubsection{\textbf{Digital Signatures}}
+A digital signature is the equivalent of a handwritten signature, it binds someone's identity to a piece of information. A digital signature scheme consists of a \textbf{signature creation algorithm} and an associated \textbf{signature verification algorithm}. \\
+Digital signatures \emph{with appendix} require the original message as input to the verification algorithm, digital signatures \emph{with message recovery} \textbf{do not} require the original message as input, it is recovered from the signature itself. 
+
+The \textbf{DSS} is a standardized signatures scheme with appendix, which describes an algorithm called \textbf{DSA} (Digital Signature Algorithm) based on DLP, it has recently been extended and is now based on elliptic curves. \\
+In order to sign a message, the owner first computes the hash value of the message, this value and the private key are then fed to the signing algorithm. 
+The output is a signature of the input message, anyone who wishes to verify the signature can simply take the message, the public key and the signatures and compute the verification algorithm. 
+
+\subsection{\textbf{Security and Attacks}} 
+There exist many different types of attacks on cryptographic primitives, usually the goal is to deduce the secret key. \\
+A \textbf{passive attack} is one, where the adversary only monitors the communication channel or the side-channels of the communication devices, they target the implementation, not the algorithm itself. \\
+An \textbf{active attack} is one, where the adversary attempts to alter the transmission on the channel or the computation inside the device (\emph{fault attacks}). 
+Side-channel attacks and fault attacks are so called \textbf{implementation attacks}, which pose a serious threat to cryptographic systems. 
+To classify attacks, an assumption is made, that the adversary knows all details, except for the secret key. 
+\begin{itemize}
+\item \textbf{ciphertext-only}: deduce secret key by only observing ciphertext
+\item \textbf{known-plaintext}: adversary has number of plaintext and corresponding ciphertexts
+\item \textbf{chosen-plaintext}: adversary chooses plaintext and is given corresponding chiphertext
+\item \textbf{adaptive chosen-plaintext}: choice of plaintext may depend on previous chipertexts
+\item \textbf{chosen-ciphertext}: adversary chooses the ciphertext and is given the corresponding plaintext
+\item \textbf{adaptive chosen-ciphertext}: choice of ciphertext may depend on previous plaintexts
+\end{itemize}
+Encryption schemes, which are vulnerable to ciphertext-only attacks, are considered completely insecure. 
+
+\vspace{0.5cm}
+\subsubsection{\textbf{Security Models}}
+There are several different models, under which the security of a cryptograhpic primitive can be evaluated. 
+\label{ex:secmod}
+\begin{itemize}
+\item \textbf{Unconditional security}: In this model, the adversary is assumed to have unlimited computational power, so this model is also called \emph{perfect secrecy}. A necessary condition is, that the secret key is at least as long as the message, because of that, systems like that are impractical. 
+\item \textbf{Computational security}: Adversaries are assumed to have polynomial computational power, an algorithm is considered to be secure, if the best algorithm for breaking requires superpolynomial or exponential number of steps. 
+\item \textbf{Provable security}: A cipher has provable security, if the difficulty of breaking can be shown to be equivalent to solving a well known, hard mathematical problem like DLP. 
+\item \textbf{Practical security}: It is also related tot he computational power of the adversary, a cipher is considered practically secure, if the best \emph{known} attack requires at least $N$ operations, where $N$ is a sufficiently large number. 
+\end{itemize}
+
+\pagebreak 
+\subsection{\textbf{Review Exercises}}
+
+\subsubsection{\textbf{Name and explain the four security services (properties) cryptography can provide!}}
+\begin{itemize}
+\item confidentiality: "no unintended third party can understand the content"
+\item integrity: "no one can change the message while it is in transit"
+\item authentication: "get assurance of identity"
+\item non-repudiation: "sender cannot deny a message was sent"
+\end{itemize}
+
+\subsubsection{\textbf{What is Kerckhoffs' principle?}}
+The adversary knows all details about the used algorithms and protocols, only the secret key is unknown. 
+
+\subsubsection{\textbf{What are the basic components of a block cipher?}}
+The block cipher is a mathematical function, which takes plaintext as input, separates it into blocks, encrypts those with the secret key and has as output the ciphertext. 
+Examples are DES (Data Encryption Standard) and AES (Advanced Encrpytion Standard). 
+
+\subsubsection{\textbf{What is the difference between a block cipher and a stream cipher?}}
+A block cipher encrypts blocks of data using a function dependent on the key, while a stream cipher generates a bitstream from the key and XORs it with the data. 
+
+\subsubsection{\textbf{What is the difference between a MAC and an MDC?}}
+MAC (Message Authentication Code)
+\begin{itemize}
+\item keyed hash-function (hash-value is signed)
+\item ensures data integrity and data authentication
+\end{itemize}
+MDC (Modification Detection Code)
+\begin{itemize}
+\item unkeyed hash-function
+\item ensure data integrity
+\end{itemize}
+
+\subsubsection{\textbf{What is the meaning of ``pre-image resistance''? For what cryptographic primitive is it relevant?}}
+It should be computationally unfeasible, to find a pre-image to a given hash-value, this is relevant for MDCs (Modification Detection Codes). 
+So it should be efficiently possible, to find the pre-image of a hash-value, meaning, finding a value that is mapped to a certain hash value. 
+
+\subsubsection{\textbf{Explain how RSA encryption and decryption work!}}
+Shown in (\ref{ex:rsa}). 
+
+\subsubsection{\textbf{What is a digital signature with appendix?}}
+A digital signature binds someones identity to a piece of information, those with appendix require the original message as input to the verification algorithm. 
+
+\subsubsection{\textbf{Describe and explain the Diffie-Hellman Problem? What is it used for?}}
+It is used for RSA, generally used for computing a common secret key. Two entities A and B agree to use a prime number $p$ and a base $g$, now A generates a secret random number $a$ and B $b$. Then A sends $g^{a} \ mod \ p$ and B sends $g^{b} \ mod \ p$ and both can compute $g^{ab} \ mod \ p$, which is their common secret key. 
+
+\subsubsection{\textbf{Name and explain at least three different models of security}}
+Shown in (\ref{ex:secmod}).
+
+\subsubsection{\textbf{What does the term ``exhaustive key search'' mean?}}
+All keys in the key space are being tried out, until the correct one is found. 
+
+
+
+
+%-----------------------------------------------------------
+%-
+%-  ELECTRONIC SIGNATURES and PUBLIC KEY INFRASTRUCTURES
+%-
+%-----------------------------------------------------------
+\section{\textbf{ELECTRONIC SIGNATURES and PUBLIC KEY INFRASTRUCTURES}}
+\subsection{\textbf{Digital Signatures}}
+A \textbf{digital signature} is a data string, which associates a message in digital form with some originating entity. \\
+\textbf{DS with appendix} require the original message as input \\
+\textbf{DS with message recovery} do not require the original message as input, the message is recovered from the signature itself.\\
+\textbf{Randomized DS} has several valid signatures for a given message. \\
+Most of the signatures schemes which are in use today, belong to the class of (randomized) digital signatures with appendix, this is due to the fact, that in most schemes, the hash of a message is signed instead of the message. 
+This has advantages, the signatures are much shorter, when the hash is signed and several attacks, which apply for signatures schemes with message recovery can be thwarted (vereitelt) by signing the hash. Breaks can be classified as
+\begin{itemize}
+\item \textbf{Total break}
+\item \textbf{Selective forgery}
+\item \textbf{Existential forgery}
+\end{itemize}
+
+\subsection{\textbf{Review Exercises}}
 
 
 
 
 
 
+\section{\textbf{ELECTRONIC COMMERCE}}
+\subsection{\textbf{Review Exercises}}
 
 
 
 
 
-\section{ELECTRONIC SIGNATURES and PUBLIC KEY INFRASTRUCTURES}
 
-\section{ELECTRONIC COMMERCE}
+\section{\textbf{NETWORK SECURITY}}
+\subsection{\textbf{Review Exercises}}
 
-\section{NETWORK SECURITY}
 
-\section{IMPLEMENTATION SECURITY}
 
-\section{OPERATING SYSTEM SECURITY}
 
-\section{PRIVACY}
+
+
+\section{\textbf{IMPLEMENTATION SECURITY}}
+\subsection{\textbf{Review Exercises}}
+
+
+
+
+
+
+\section{\textbf{OPERATING SYSTEM SECURITY}}
+\subsection{\textbf{Review Exercises}}
+
+
+
+
+
+
+\section{\textbf{PRIVACY}}
+\subsection{\textbf{Review Exercises}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %-----------------------------------------------------------

@@ -348,10 +348,31 @@ A \textbf{digital signature} is a data string, which associates a message in dig
 Most of the signatures schemes which are in use today, belong to the class of (randomized) digital signatures with appendix, this is due to the fact, that in most schemes, the hash of a message is signed instead of the message. 
 This has advantages, the signatures are much shorter, when the hash is signed and several attacks, which apply for signatures schemes with message recovery can be thwarted (vereitelt) by signing the hash. Breaks can be classified as
 \begin{itemize}
-\item \textbf{Total break}
-\item \textbf{Selective forgery}
-\item \textbf{Existential forgery}
+\item \textbf{Total break}: An adversary is either able to compute the private key or find an efficient signing algorithm, which is functionally equivalent to the valid signing algorithm
+\item \textbf{Selective forgery}: An adversary is able to create a valid signature for a particular message or a class of messages a priori, creating the signature does not involve directly the legitimate signer.
+\item \textbf{Existential forgery}: An adversary is able to forge a signature for at least one message, there is little or no control over the message and the legitimate user may be involved in the deception. 
 \end{itemize}
+Attacks can be classified to the capabilities of the attacker
+\begin{itemize}
+\item \textbf{Key-only attack}: Adversary knows signer's public key
+\item \textbf{Known-message attacks}: Adversary has signatures for a set of messages, which are known to him.
+\item \textbf{Chosen-message attacks}: Adversary obtains valid signatures from a set of messages, chosen by him. 
+\item \textbf{Adaptive chosen-message attack}: Adversary may request signatures which depend on the signer's public key and he may request signatures, which depend on previously obtained signatures. 
+\end{itemize}
+
+\vspace{0.5cm}
+\subsubsection{\textbf{RSA Signature Scheme}}
+
+
+
+\vspace{0.5cm}
+\subsubsection{\textbf{DSA Signature Standard (DSS)}}
+
+
+
+\vspace{0.5cm}
+\subsubsection{\textbf{ECDSA Signature Scheme}}
+
 
 \subsection{\textbf{Review Exercises}}
 

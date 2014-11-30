@@ -224,7 +224,7 @@ The private key $d$ is a random number between 2 and $p-1$. \\
 \textbf{Example Encryption}: \\
 Encrypt the message M, assuming $M=55$ with public key $(e,p,g) = (26,41,6)$. Then, use random number $k=11$ and compute 
 \begin{align*}
-c_1 = g^{k} 6^{11} \equiv 28 \ mod \ 41 \\
+c_1 = g^{k} = 6^{11} \equiv 28 \ mod \ 41 \\
 c_2 = m\cdot e^{k} = 526^{11} \equiv 19 \ mod \ 41
 \end{align*}
 The encrypted message $(c_1,c_2) = (28,41)$ is now sent. 
@@ -463,7 +463,7 @@ Two entities choose a finite field $\mathbb{F}_q$, an elliptic curve E, defined 
   \begin{center}
     \begin{tabularx}{\columnwidth}{ l   }
     \toprule
-    \textbf{Algorithm 6} ECDSA signature Creation \\ \midrule
+    \textbf{Algorithm 6} ECDSA Signature Creation \\ \midrule
     \textbf{Input:} $m,d$, elliptic curve with base point $G$ of order $n$ \\ 
     \textbf{Output:} Accept/Reject \\
     1.) Chosse a random number $k$ with $k: 1 \leq k \leq n-1$\\
@@ -476,11 +476,46 @@ Two entities choose a finite field $\mathbb{F}_q$, an elliptic curve E, defined 
     \end{tabularx}
   \end{center}
 \end{table}
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabularx}{\columnwidth}{ l   }
+    \toprule
+    \textbf{Algorithm 7} ECDSA Signature Verification \\ \midrule
+    \textbf{Input:} $m,(r,s),Q$, elliptic curve \\ 
+    \textbf{Output:} Accept/Reject \\
+    1.) Verifiy, that $r,s$ are integers in the intervall $[1,n-1]$ \\
+    2.) compute $e = h(M)$ \\
+    3.) Compute $w = s^{-1} \ mod \ n$ \\
+    4.) Compute $u_1 = ew \ mod \ n $ and $u_2 = rw \ mod \ n$ \\
+    5.) Compute $X = u_1G + u_2G$ \\
+    6.) \textbf{if} $X=0$ \textbf{then} \\
+    7.) 	  Return Reject \\
+    8.) \textbf{else} \\
+    9.) Compute $v=x_1 \ mod \ n$ where $X=(x_1,y_1)$ \\
+    10.) Return Accept if $v=r$, else return Reject!\\
+    \bottomrule
+    \end{tabularx}
+  \end{center}
+\end{table}
 
 
-
-
-
+\subsection{\textbf{Public Key Infrastructures}}
+Even public keys need protection, because adversaries could try to modify published public keys. 
+So there needs to be some mechanism to check their authenticity, meaning to check, if a certain key belongs indeed to a certain person. 
+A public key infrastructure (PKI) is the basis of a security infrastructure, whose services are implemented and delivered by using public-key concepts and techniques. 
+\vspace{0.5cm}
+\subsubsection{\textbf{Public Key Distribution}}
+Different possibilities for distributing public keys include the \emph{face-to-face approach}, isn't practical, the person would need to meet with everyone who wishes to obtain her public key in person. \\
+The second option is, that the person publishes her key on a trusted web server and anyone, who wishes to obtain the key simply looks there. Is still impractical, because there is no way to verify the identity and integrity of the key. \\
+The third option is, that the certified public key is stored on a trusted web server, meaning that the trusted web server provides a service, which adds additional information to a key, the so-called \textbf{certificate}.
+A certificate basically consists of a public key and some user information, which has been digitally signed by the issuer of the certificate. 
+\vspace{0.5cm}
+\subsubsection{\textbf{PGP}}
+In a PGP based PKI, each user acts a s a third party, who can sign keys. Each user also manages keys herself, hence, there is no need for a central controlling authority, it is based on the so-called \textbf{user-centric trust model}. Each user trusts herself and a limited amount of other users. 
+For example, Alice trusts Bob, hence she trusts all the keys, which have been signed by Bob, so if Bob trusts Clark, then also Alice trusts Clark. \\
+The problem here is, that it is implicitly assumed, that \textbf{trust is transitiv}, also the \textbf{revocation} (Widerruf) is difficult. 
+\vspace{0.5cm}
+\subsubsection{\textbf{X.509}}
 
 
 

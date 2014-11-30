@@ -3,6 +3,7 @@
 \usepackage{stylesheet}
 
 
+
 %-----------------------------------------------------------
 %-
 %-  Titel
@@ -54,7 +55,7 @@ This document should serve as a summary of the necessary information given in th
 \section{ABBREVIATIONS and STANDARD NOTATION}
 \begin{table}[h!]
     \begin{center}
-    \begin{tabular}{c c} % right-aligned, column separation by =-sign (and some whitespace to the left and to the right), left-aligned, centered, siunit: aligned at comma
+    \begin{tabularx}{\columnwidth}{c c} % right-aligned, column separation by =-sign (and some whitespace to the left and to the right), left-aligned, centered, siunit: aligned at comma
         \toprule
        Abbreviation & Notation \\
         \midrule
@@ -89,7 +90,7 @@ This document should serve as a summary of the necessary information given in th
         SSCA & Simple Side-Channel Attack \\
         DSCA & Differential Side-Channel Attack \\
         \bottomrule
-    \end{tabular}
+    \end{tabularx}
     \end{center}
 \end{table}
 
@@ -223,7 +224,7 @@ The private key $d$ is a random number between 2 and $p-1$. \\
 \textbf{Example Encryption}: \\
 Encrypt the message M, assuming $M=55$ with public key $(e,p,g) = (26,41,6)$. Then, use random number $k=11$ and compute 
 \begin{align*}
-c_1 = g^{k} ? 6^{11} \equiv 28 \ mod \ 41 \\
+c_1 = g^{k} 6^{11} \equiv 28 \ mod \ 41 \\
 c_2 = m\cdot e^{k} = 526^{11} \equiv 19 \ mod \ 41
 \end{align*}
 The encrypted message $(c_1,c_2) = (28,41)$ is now sent. 
@@ -365,7 +366,7 @@ Attacks can be classified to the capabilities of the attacker
 Key setup is the same as in RSA encryption, $m$ denotes the input message, $n$ the modulus, $d$ the private key and $e$ the public key.\\
 \begin{table}[h!]
   \begin{center}
-    \begin{tabular}{ l   }
+    \begin{tabularx}{\columnwidth}{ l   }
     \toprule
     \textbf{Algorithm 1} RSA Signature Creation \\ \midrule
     \textbf{Input:} $m,n,d$ \\ 
@@ -375,14 +376,14 @@ Key setup is the same as in RSA encryption, $m$ denotes the input message, $n$ t
  3.) return $s$ \\
 
     \bottomrule
-    \end{tabular}
+    \end{tabularx}
   \end{center}
 \end{table}
 
 \pagebreak
 \begin{table}[h!]
   \begin{center}
-    \begin{tabular}{ l   }
+    \begin{tabularx}{\columnwidth}{ l   }
     \toprule
     \textbf{Algorithm 2} RSA Verification Creation \\ \midrule
     \textbf{Input:} $m,s,e$ \\ 
@@ -391,7 +392,7 @@ Key setup is the same as in RSA encryption, $m$ denotes the input message, $n$ t
     2.) $M = s^{e} \ mod \ n$ \\
     3.) If $M=Encode(m)$, then Return \emph{Accept}, else \emph{Reject} \\
     \bottomrule
-    \end{tabular}
+    \end{tabularx}
   \end{center}
 \end{table}
 
@@ -402,7 +403,7 @@ It requires the usage of a hash function, originally SHA-1 was required, but now
 The numbers created by the key generations algorithm are the two primes $p$ and $q$, the element $\alpha$ with order $q$, the private key $x$ and the corresponding public key $y$.
 \begin{table}[h!]
   \begin{center}
-    \begin{tabular}{ l   }
+    \begin{tabularx}{\columnwidth}{ l   }
     \toprule
     \textbf{Algorithm 3} DSA Key Generation \\ \midrule
     \textbf{Input:}  \\ 
@@ -415,14 +416,72 @@ The numbers created by the key generations algorithm are the two primes $p$ and 
     5.) Compute $y = a^{x} \ mod \ p$ \\
     6.) Return public key ($p,q,\alpha,y$) and private key $x$\\
     \bottomrule
-    \end{tabular}
+    \end{tabularx}
+  \end{center}
+\end{table}
+
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabularx}{\columnwidth}{ l   }
+    \toprule
+    \textbf{Algorithm 4} DSA Signature Creation \\ \midrule
+    \textbf{Input:} $m,x$ \\ 
+    \textbf{Output:} Sig(m) \\
+    1.) Choose a random $k$, $0 < k < q$ \\
+    2.) Compute $r = (a^k \ mod \ p) \ mod \ q$ \\
+    3.) Compute $s = k^{-1}(h(m) + xr) \ mod \ q$ \\
+    4.) Return the signature for $m$ which is $(r,s)$\\
+    \bottomrule
+    \end{tabularx}
+  \end{center}
+\end{table}
+
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabularx}{\columnwidth}{ l   }
+    \toprule
+    \textbf{Algorithm 5} DSA Signature Verification \\ \midrule
+    \textbf{Input:} $m,(r,x),y$ \\ 
+    \textbf{Output:} Accept/Reject \\
+    1.) Verify that $0 < r < q$ and $0 < s < q$\\
+    2.) Compute $u_1 = wh(m) \ mod \ q$ and $u_2 = rw \ mod \ q$ with \\ $w = s^{-1} \ mod \ q$ \\
+    3.) Compute $v = (\alpha^{u_1}y^{u_2} \ mod \ p) \ mod \ q$ \\
+    4.) Return the signature for $m$ which is $(r,s)$\\
+    5.) Return \emph{Accept}, if $v=r$, otherwise return \emph{Reject}. \\
+    \bottomrule
+    \end{tabularx}
+  \end{center}
+\end{table}
+
+
+\vspace{0.5cm}
+\subsubsection{\textbf{ECDSA Signature Scheme}}
+The elliptic curve digital signature algorithm (ECDSA) is the analogue to the DSA, the major difference is, that the DLP, which gives the algorithm its security, is hereby defined over an elliptic curve. 
+Two entities choose a finite field $\mathbb{F}_q$, an elliptic curve E, defined over that field and a base point G with order n. One key pair is $(d,Q)$, where $d$ is her private and $Q$ is her public key. 
+
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabularx}{\columnwidth}{ l   }
+    \toprule
+    \textbf{Algorithm 6} ECDSA signature Creation \\ \midrule
+    \textbf{Input:} $m,d$, elliptic curve with base point $G$ of order $n$ \\ 
+    \textbf{Output:} Accept/Reject \\
+    1.) Chosse a random number $k$ with $k: 1 \leq k \leq n-1$\\
+    2.) Compute $kG = (x_1,y_1)$ and $r = x_1 \ mod \ n$. If $r=0$,\\ then go to step 1. \\
+    3.) Compute $k^{-1} \ mod \ n$ \\
+    4.) $e = h(M)$ \\
+    5.) Compute $s = k^{-1}(e+dr) \ mod \ n$. If $s=0$, then go to step 1. \\
+    6.) Return the signature which is $(r,s)$ \\
+    \bottomrule
+    \end{tabularx}
   \end{center}
 \end{table}
 
 
 
-\vspace{0.5cm}
-\subsubsection{\textbf{ECDSA Signature Scheme}}
+
+
+
 
 
 \subsection{\textbf{Review Exercises}}

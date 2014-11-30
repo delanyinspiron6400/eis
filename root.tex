@@ -513,21 +513,155 @@ A certificate basically consists of a public key and some user information, whic
 \subsubsection{\textbf{PGP}}
 In a PGP based PKI, each user acts a s a third party, who can sign keys. Each user also manages keys herself, hence, there is no need for a central controlling authority, it is based on the so-called \textbf{user-centric trust model}. Each user trusts herself and a limited amount of other users. 
 For example, Alice trusts Bob, hence she trusts all the keys, which have been signed by Bob, so if Bob trusts Clark, then also Alice trusts Clark. \\
-The problem here is, that it is implicitly assumed, that \textbf{trust is transitiv}, also the \textbf{revocation} (Widerruf) is difficult. 
+The problem here is, that it is implicitly assumed, that \textbf{trust is transitive}, also the \textbf{revocation} (Widerruf) is difficult. 
 \vspace{0.5cm}
 \subsubsection{\textbf{X.509}}
+The trust model, which is the basis for X.509-based PKIs is the hierarchical trust model, there exists a so-called \textbf{root CA}, which acts as root or anchor of trust for the entire domain of entities below it, it owns a root-certificate, which is the basis of trust for all entities, that belong to the domain. The root CA certifies CAs immediately below it, who certify again some CAs below them and so on. \\
+At the second to last level, the CAs certify end entities. \textbf{Each entity in the hierarchy} must be \textbf{supplied with the certificate of the root CA}. \\
+The advantage is, that because of the hierarchical structure, revocation checking can be reliably implemented, disadvantages are, that they tend to be big and complex.
+
+\vspace{0.5cm}
+\subsubsection{\textbf{X.509 Certificates}}
+A certificate is a data structure, which essentially \textbf{consists of the public key} of an entity \textbf{plus some information about the entity}, and it is \textbf{digitally signed} by the certificate issuer. 
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.44]{images/diagrams/x509.jpg} 
+\end{figure}
+
+\pagebreak
+
+An \textbf{OID} is a unique representation for a given object, for example an algorithm or a standard, it is represented as a sequence of integers separated by decimal points. They are hierarchical and they are registered with authorities to ensure uniqueness. \\
+A \textbf{DN} is a hierarchical naming convention, they are supposed to ensure the unique name of an entity and are expressed as a concatenation of relative DNs from toe top-level node down to the last node of DN. 
+
+\subsubsection{\textbf{X.509 PKI Components}}
+\begin{itemize}
+\item \textbf{Registration Authority (RA)}: Often, a separate registration authority is used to verify the identity of entities. For highly trusted certificates, the verification of the identity requires physical presence of the entity.
+\item \textbf{Certification Authority (CA)}: The certification authority issues certificates to entities, which have already been identified. 
+\item \textbf{Certificate Repository}: The certificates are stored in the certificate repository, those can be implemted using LDAP (lightweight directory access protocol).
+\item \textbf{Certificate Revocation}: The revocation of issued certificates is hardly implemented in practice, instead, most mechanisms are focused on the distribution of revocation information. 
+\end{itemize}
+
+
+\vspace{0.5cm}
+\subsection{\textbf{Legal Aspects of Electronic Signatures}}
+The legal definition of an electronic signature is given as follows
+\begin{center}
+\textit{Data in electronic form, which are attached to or logically associated with other electronic data and which serve as a method of authentication.}
+\end{center}
+According to the above mentioned directive, the validity of this electronic signature cannot be denied solely based on the fact, that it is in electronic form. 
+
+\subsubsection{\textbf{Advanced Electronic Signatures}}
+\label{sig:adv}
+An \emph{advanced electronic signature} must be uniquely linked to the signatory (Unterzeichner). It also must be capable of identifying the signatory and must be created using means, that the signatory can maintain under his sole control. It also must be linked to the data, to which it relates, in such a manner, that any subsequent change of the data is detectable. \\
+This type of electronic signatures are not considered equal to handwritten signatures from a legal point of view. 
+
+\subsubsection{\textbf{Qualified (Secure) Electronic Signatures}}
+A \emph{qualified (secure) electronic signature} is an advanced electronic signature, which was produced on a secure signature creation device and which is based on a qualified certificate. It must be assured, that the signature creation data (private key) exists only once and is protected by the user. \\
+The Austrian Signature Law (SigG) specifies that, apart from a few exceptions, a qualified digital signature is legally equivalent to a handwritten signature. 
+
+
+\pagebreak
+\subsection{\textbf{Electronic Signatures in Practice}}
+Applications, that profit from electronic signatures, are primarily available in the e-government sector. 
+The Austrian initiative is known as the concept "Bürgerkarte", in this concept, the so-called "Bürgerkartenumgebung" is the combination of the security-relevant components with respect to electronic signatures, applications communicate with the Bürgerkartenumgebung over the so-called \textbf{security layer}, which is an interface, that provides a logical view. 
 
 
 
 \subsection{\textbf{Review Exercises}}
+\subsubsection{\textbf{What is a digital signature?}}
+In the language of cryptographers, a \emph{digital signature} is a data string, which associates a message in digital form with some originating entity. 
+\subsubsection{\textbf{What classes of digital signatures can you distinguish?}}
+\begin{itemize}
+\item DS with appendix
+\item DS with message recovery
+\item Randomized DS
+\end{itemize}
+\subsubsection{\textbf{What types of breaks of digital signatures schemes can you distinguish?}}
+\begin{itemize}
+\item \textbf{Total break}: An adversary is either able to compute the private key or find an efficient signing algorithm, which is functionally equivalent to the valid signing algorithm
+\item \textbf{Selective forgery}: An adversary is able to create a valid signature for a particular message or a class of messages a priori, creating the signature does not involve directly the legitimate signer.
+\item \textbf{Existential forgery}: An adversary is able to forge a signature for at least one message, there is little or no control over the message and the legitimate user may be involved in the deception. 
+\end{itemize}
+\subsubsection{\textbf{Describe the working principle of a digital signature scheme with appendix!}} 
+Signatures with appendix require the message as input for the verification.
+\subsubsection{\textbf{What is a PKI used for?}} 
+PKI stands for Public Key Infrastructure, when using asymmetric encryption, the public keys have to be exchanged which can happen over a trusted web server. Besides the key there is also a certificate available, that guaranties, that the key hasn't been altered. 
+\subsubsection{\textbf{What is the difference between a PGP-based and a X.509-based PKI?}} 
+Difference lies in the trust modell.\\
+\textbf{PGP}: Each user acts as CA and signs keys from other users, a user centric trust, if A trusts B and B trusts C, A also trusts C. \\
+\textbf{X.509}: Hierarchical structure, root CA creates root certificate, can define some CAs below him, which also can certify CAs below them and so on, the second to last defines the end user. 
+\subsubsection{\textbf{What is a CRL?}} 
+A CRL (Certificate Revocation List) is a list of certificates, that have been revoked (für ungültig erklärt worden). 
 
+\pagebreak
+\subsubsection{\textbf{What is an advanced electronic signature?}} 
+\begin{itemize}
+\item It must be uniquely linked to the signatory
+\item It must be capable of identifying the signatory
+\item It must be created using means, that the signatory can maintain under his sole control
+\item It must be lined to the data, which it relates to, in such a manner, that any subsequent change of the data is detectable. 
+\end{itemize}
+\subsubsection{\textbf{What type of electronic signature is equivalent (from a legal point of view) to a handwritten signature?}} 
+Qualified electronic signatures are equivalent to handwritten signatures.
+\begin{itemize}
+\item advanced electronic signatures based on
+\item secure signature-producing-process and based on qualified certificate
+\item mandatory requirements like a private key must only exist once
+\item the requirements are protected from harmful access of others
+\end{itemize}
 
+\raggedbottom
 
-
-
-
+\pagebreak
 \section{\textbf{ELECTRONIC COMMERCE}}
+
+\subsection{\textbf{E-shopping}}
+
+
+\subsection{\textbf{Types of Payment}}
+
+
+\subsection{\textbf{E-payments}}
+
+\subsubsection{\textbf{E-money}}
+
+\subsubsection{\textbf{Bank cards}}
+
+\subsubsection{\textbf{SET and its Successors}}
+
+
+\subsection{\textbf{Alternative E-payment Methods}}
+
+\subsubsection{\textbf{PayPal}}
+
+\subsubsection{\textbf{PaySafe Card}}
+
+\subsubsection{\textbf{First Gate Click\&Buy}}
+
+\subsubsection{\textbf{Google Wallet and NFC}}
+
+
 \subsection{\textbf{Review Exercises}}
+
+\subsubsection{\textbf{What types of payment systems can you distinguish?}}
+
+\subsubsection{\textbf{What is the difference between micropayments and macropayments?}}
+
+\subsubsection{\textbf{Discuss 4 aspects of digital currency!}}
+
+\subsubsection{\textbf{Discuss the trade-offs that are typically made in electronic payment systems!}}
+
+\subsubsection{\textbf{Explain in short, how money is generated in the DigiCash system!}}
+
+\subsubsection{\textbf{What does SET mean and what was/is the SET system used for?}}
+
+\subsubsection{\textbf{Explain the purpose of the dual signature in the SET system!}}
+
+
+
+
+
+
 
 
 

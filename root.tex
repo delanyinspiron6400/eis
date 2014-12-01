@@ -658,8 +658,33 @@ Trade-offs include
 \item \textbf{Transparency vs Explicitness}: User want to have control over all their transactions but they also expect not to be bothered with any details. 
 \end{itemize}
 \vspace{0.5cm}
-Discussed will be the famous DigiCash system, coins there are anonymous, so the bank doesn't know, which coin belongs to which customer. Despite the anonymity, the system prevents multiple spending of coins, it allows even to determine with a high probability, who tried to double-spend money in case such a fraud occurred. 
+Discussed will be the famous DigiCash system, coins there are anonymous, so the bank doesn't know, which coin belongs to which customer. Despite the anonymity, the system prevents multiple spending of coins, it allows even to determine with a high probability, who tried to double-spend money in case such a fraud occurred. \pagebreak
+The protocol, describing the DigiCash system works as follows:
+\begin{itemize}
+\item \textbf{Money Generation Phase}:\\ \begin{enumerate}
+\item The customer prepares $n$ anonymous money orders for a given amount, each order consists of a random unique string $X$ (the serial number) and $m$ pairs of identity bit strings, who have three important properties. They cannot be changed later by the customer, each pair identifies the customer and they are sealed by default!
+\item Customer puts all orders in envelopes, seals them and sends them to bank
+\item Bank asks customer to unseal and open $n-1$ envelopes of his choice, it checks correctness and asks customer to reveal all identity strings.
+\item If the bank is satisfied (customer didn't try to cheat), the bank signs the one remaining seals money order, gives it back to the customer and deducts the proper amount from the customers bank account
+\item Customer unseals the order to extract the coin. 
+\end{enumerate}
+\item \textbf{Money Spending Phase} \\
+\begin{enumerate}
+\item Customer unseals order and spends coin with merchant
+\item Merchant checks validity by verifying the banks signature.
+\item Merchant asks Customer to reveal either left or right half of each identity string, he does that by giving the customer a random selector string, that tells, which half to reveal.
+\end{enumerate}
+\item \textbf{Double-spending Checking Phase}: \\
+\begin{enumerate}
+\item Merchant takes the coin to the bank
+\item Bank verifies signature and checks database for uniqueness of string $X$. If unique, bank credits the amount to the merchant's account and records the unique string in the database. 
+\item If on the other hand the string isn't unique (already in DB), the bank doesn't accept coin. It compares the identity string with the one in the DB, if they match, the bank knows, that the merchant cheated. If the strings do not match, then Alice must have copied the coin. The second merchant, who accepted the coin, gave the customer different random selector strings, meaning, the bank can find a position, where one merchant has openend the left half and the other the right half, together they reveal the identity of the customer.
+\end{enumerate}
+\end{itemize}
+In short, customer produces $n$ money orders with $n$ serial numbers and $n$ identity strings, then the customer "blinds" the money orders, so the bank doesn't see the serial numbers, so it is anonymous. The bank now checks $n-1$ money orders for their consistency, if valid, it signs the last remaining blinded money order with its private key, without seeing what's inside, customer now possesses an anonymous coin signed by the bank. In the spending phase, the merchant checks the validity of the coin by requesting halves of the identity strings, randomly either the left or right one and checks validity.\\
+When merchant now deposits coin at the bank, signature is once again validated and the database is checked for the serial number. If the string is already present, bank checks stored identity strings, if merchant wanted to collect money twice, those strings will match. Otherwise there will be a pair of identity string halves, that will produce a full identity string and reveal the cheating customer. 
 
+\vspace{0.5cm}
 \subsubsection{\textbf{Bank cards}}
 
 \subsubsection{\textbf{SET and its Successors}}

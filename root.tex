@@ -636,6 +636,7 @@ It is a floating claim on a bank or other financial institution, that is not lin
 It is possible to distinguish \textbf{micropayments} and \textbf{macropayments}. \\
 \textbf{Micropayments} are tiny value transactions below \$1, they are supposed to be cheap and a little cheating can be tolerated because of the minuscule amount. \\
 \textbf{Macropayments} are medium value transactions (between \$1 and \$1000) and large value transactions (over \$1000). 
+\label{tex:sect}
 \begin{itemize}
 \item \textbf{Security}: It is mandatory to prevent forgery, double spending and collusion of other parties (multi-party security)
 \item \textbf{Acceptability}: A wide range of parties needs to accept the payments
@@ -650,7 +651,7 @@ It is possible to distinguish \textbf{micropayments} and \textbf{macropayments}.
 \item \textbf{Traceability}: Especially with large transactions, anonymous money can be a problem, some sort of tracing mechanism would be an advantage.
 \item \textbf{Spread of Encryption Mechanisms}: E-money systems, which involve encryption heavily, might be difficult to export to other countries. 
 \end{itemize}
-Trade-offs include
+Trade-offs include \label{tex:tradeoff}
 \begin{itemize}
 \item \textbf{Privacy vs Traceability}: Tiny value payments deserve to be anonymous, while for large value payments traceability is probably favourable. 
 \item \textbf{On-line vs Off-line}: On-line payments allow to prevent double spending easily and simplify tracing transactions. Offline payments often use special purpose hardware to prevent double spending.
@@ -658,69 +659,69 @@ Trade-offs include
 \item \textbf{Transparency vs Explicitness}: User want to have control over all their transactions but they also expect not to be bothered with any details. 
 \end{itemize}
 \vspace{0.5cm}
-Discussed will be the famous DigiCash system, coins there are anonymous, so the bank doesn't know, which coin belongs to which customer. Despite the anonymity, the system prevents multiple spending of coins, it allows even to determine with a high probability, who tried to double-spend money in case such a fraud occurred. \pagebreak
+Discussed will be the famous DigiCash system, coins there are anonymous, so the bank doesn't know, which coin belongs to which customer. Despite the anonymity, the system prevents multiple spending of coins, it allows even to determine with a high probability, who tried to double-spend money in case such a fraud occurred. 
+\pagebreak
 The protocol, describing the DigiCash system works as follows:
 \begin{itemize}
-\item \textbf{Money Generation Phase}:\\ \begin{enumerate}
-\item The customer prepares $n$ anonymous money orders for a given amount, each order consists of a random unique string $X$ (the serial number) and $m$ pairs of identity bit strings, who have three important properties. They cannot be changed later by the customer, each pair identifies the customer and they are sealed by default!
-\item Customer puts all orders in envelopes, seals them and sends them to bank
-\item Bank asks customer to unseal and open $n-1$ envelopes of his choice, it checks correctness and asks customer to reveal all identity strings.
-\item If the bank is satisfied (customer didn't try to cheat), the bank signs the one remaining seals money order, gives it back to the customer and deducts the proper amount from the customers bank account
-\item Customer unseals the order to extract the coin. 
-\end{enumerate}
-\item \textbf{Money Spending Phase} \\
-\begin{enumerate}
-\item Customer unseals order and spends coin with merchant
-\item Merchant checks validity by verifying the banks signature.
-\item Merchant asks Customer to reveal either left or right half of each identity string, he does that by giving the customer a random selector string, that tells, which half to reveal.
-\end{enumerate}
+\item \textbf{Money Generation Phase}:\\ Customer produces $n$ money orders with $n$ serial numbers and $n$ identity strings, then the customer "blinds" the money orders, so the bank doesn't see the serial numbers, so it is anonymous. The bank now checks $n-1$ money orders for their consistency, if valid, it signs the last remaining blinded money order with its private key, without seeing what's inside, customer now possesses an anonymous coin signed by the bank.
+\item \textbf{Money Spending Phase}: \\
+Merchant check the validity of the coin by checking bank signature. Then requests halves of the identity strings, randomly either the left or right one of each identity string and stores them.
 \item \textbf{Double-spending Checking Phase}: \\
-\begin{enumerate}
-\item Merchant takes the coin to the bank
-\item Bank verifies signature and checks database for uniqueness of string $X$. If unique, bank credits the amount to the merchant's account and records the unique string in the database. 
-\item If on the other hand the string isn't unique (already in DB), the bank doesn't accept coin. It compares the identity string with the one in the DB, if they match, the bank knows, that the merchant cheated. If the strings do not match, then Alice must have copied the coin. The second merchant, who accepted the coin, gave the customer different random selector strings, meaning, the bank can find a position, where one merchant has openend the left half and the other the right half, together they reveal the identity of the customer.
-\end{enumerate}
-\end{itemize}
-In short, customer produces $n$ money orders with $n$ serial numbers and $n$ identity strings, then the customer "blinds" the money orders, so the bank doesn't see the serial numbers, so it is anonymous. The bank now checks $n-1$ money orders for their consistency, if valid, it signs the last remaining blinded money order with its private key, without seeing what's inside, customer now possesses an anonymous coin signed by the bank. In the spending phase, the merchant checks the validity of the coin by requesting halves of the identity strings, randomly either the left or right one and checks validity.\\
 When merchant now deposits coin at the bank, signature is once again validated and the database is checked for the serial number. If the string is already present, bank checks stored identity strings, if merchant wanted to collect money twice, those strings will match. Otherwise there will be a pair of identity string halves, that will produce a full identity string and reveal the cheating customer. 
+\end{itemize}
+
 
 \vspace{0.5cm}
 \subsubsection{\textbf{Bank cards}}
-
+Bank cards nowadays are often smart cards and offer two different functionalities: Maestro and Quick. Whenever money is being put on a Quick Card, the PIN must be entered and is checked by an online system, those transactions are authorized by this central system. 
+In all Quick terminals, there is a smart card which is used for "offline" payments. This card communicates with the customer card, saves information about the turnover and can provide additional authentication mechanisms. 
+\vspace{0.5cm}
 \subsubsection{\textbf{SET and its Successors}}
-
+SET stands for \textbf{Secure Electronic Transactions} and is a specification for authentication for paying with credit cards within online networks, jointly developed by VISA and MasterCard. \\
+In SET, the cardholder uses a software called an electronic wallet, in which the credit card numbers and digital certificate are stored. The merchant acquires a digital certificate from a financial institution and both cardholder and merchant use their certificates for authentication before a transaction. 
+During a SET transaction, the credit card number is not seen by the merchant, only the encrypted number is sent to the credit card issuer, which approves the transaction for the merchant. In this way, disclosure is prohibited during the transaction. \\
+The cryptographic means to ensure the privacy of customer data, it is called \textbf{dual-signature}, it allows the cardholder to communicate with both the merchant and the bank with one single message, which contains an order section plus a payment section
+\begin{itemize}
+\item The merchant does not need to see the payment section.
+\item The bank does not need to see the order section. 
+\item But, both sections need to be bound together. 
+\end{itemize}
+The disadvantage of SET were the significant investment required for cardholder, merchant and bank, in the mean time SET was replaced by proprietary systems from VISA (3d-Secure) and MasterCard(Master Card SecureCode). 
 
 \subsection{\textbf{Alternative E-payment Methods}}
-
-\subsubsection{\textbf{PayPal}}
-
-\subsubsection{\textbf{PaySafe Card}}
-
-\subsubsection{\textbf{First Gate Click\&Buy}}
-
-\subsubsection{\textbf{Google Wallet and NFC}}
+\begin{itemize}
+\item PayPal
+\item PaySafe Card
+\item First Gate Click\& Buy
+\item Google Wallet and NFC
+\end{itemize}
+More information about those payment options in script starting on page 41.
 
 
 \subsection{\textbf{Review Exercises}}
 
 \subsubsection{\textbf{What types of payment systems can you distinguish?}}
+\begin{itemize}
+\item Cash
+\item Credit systems
+\item Debit systems
+\end{itemize}
 
 \subsubsection{\textbf{What is the difference between micropayments and macropayments?}}
-
+Micropayments describe payments below 1\$ and macro payments usually payments between 1\$ and 1000\$. 
 \subsubsection{\textbf{Discuss 4 aspects of digital currency!}}
-
+Shown in (\ref{tex:sect}).
 \subsubsection{\textbf{Discuss the trade-offs that are typically made in electronic payment systems!}}
-
+Shown in (\ref{tex:tradeoff}).
 \subsubsection{\textbf{Explain in short, how money is generated in the DigiCash system!}}
-
+Answer is on the left side! :) Money Generation Phase of DigiCash. 
 \subsubsection{\textbf{What does SET mean and what was/is the SET system used for?}}
-
+SET stands for Secure Electronic Transaction and is a specification for paying with credit cards, used in the past by VISA and MasterCard.
 \subsubsection{\textbf{Explain the purpose of the dual signature in the SET system!}}
+It allows the cardholder a sensitive way to pay, without the merchant seeing the payment details and without the bank seeing the order details, each part is encrypted using either the public key of the merchant or the bank, but both are bound together. 
 
 
-
-
-
+\pagebreak
 
 
 
@@ -729,7 +730,67 @@ When merchant now deposits coin at the bank, signature is once again validated a
 
 
 \section{\textbf{NETWORK SECURITY}}
+
+Network security addresses all security issues, which come into play when two parties attempt to communicate over a network, which is typically not secure and trusted. This part focuses on attacks and counter-measures, which are not prevented by cryptographic methods. 
+
+\subsection{\textbf{Social Engineering}}
+
+\subsection{\textbf{OS Fingerprinting}}
+
+\subsubsection{\textbf{Telnet}}
+
+\subsubsection{\textbf{TCP Stack Fingerprinting}}
+
+\subsection{\textbf{Attacking Internet Protocols}}
+
+\subsubsection{\textbf{SYN Flooding}}
+
+\subsubsection{\textbf{Smurfing}}
+
+\subsubsection{\textbf{DDoS Attacks}}
+
+\subsubsection{\textbf{Spoofing}}
+
+\subsection{\textbf{Trojans, Viruses, Worms and other malicious code}}
+
+\subsubsection{\textbf{Taxonomy of Malicious Programs}}
+
+\subsubsection{\textbf{Trap doors}}
+
+\subsubsection{\textbf{Logic Bombs}}
+
+\subsubsection{\textbf{Zombies}}
+
+\subsubsection{\textbf{Viruses and Worms}}
+
+\subsection{\textbf{Intrusion Detection and Firewalls}}
+
+\subsubsection{\textbf{Firewalls}}
+
+\subsubsection{\textbf{Intrusion Detection Systems}}
+
+
+
 \subsection{\textbf{Review Exercises}}
+\subsubsection{\textbf{What is social engineering?}}
+
+\subsubsection{\textbf{What are the goals of social engineering?}}
+
+\subsubsection{\textbf{What is OS Fingerprinting?}}
+
+\subsubsection{\textbf{What is TCP stack fingerprinting}}
+
+\subsubsection{\textbf{What is accomplished by a smurfing attack?}}
+
+\subsubsection{\textbf{What is a trap door?}}
+
+\subsubsection{\textbf{What are the four phases of a virus?}}
+
+\subsubsection{\textbf{What types of viruses can you distinguish?}}
+
+\subsubsection{\textbf{What is a firewall?}}
+
+\subsubsection{\textbf{What types of intrusion detection systems can you distinguish?}}
 
 
 

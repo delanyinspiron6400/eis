@@ -738,69 +738,173 @@ Social Engineering typically tries to achieve one of the following goals
 \item Violation of other security controls
 \end{itemize}
 
+Social engineering attacks are further subdivided into \emph{active } and \emph{passive} attacks, in active attacks, the attacker actively interacts with the attacked person, in passive attacks the attacker acquires information with stealth.
 \subsection{\textbf{OS Fingerprinting}}
-
+\emph{OS fingerprinting} is a technique, in which the attacker tries to determine the operating system, which is running on the target machine. As much vulnerabilities, which can be exploited in an attack, are OS dependent, OS fingerprinting is typically the first step in a network attack. 
+\vspace{0.5cm}
 \subsubsection{\textbf{Telnet}}
-
+\emph{Telnet session negotiation} is probably the simplest way to determine the OS, you simply have to open a telnet session to the remote server, those servers often respond with a whole bunch of information about the OS. 
+\vspace{0.5cm}
 \subsubsection{\textbf{TCP Stack Fingerprinting}}
+Another way of gathering information about the OS running on a remote host is to look at how the TCP stack is implemented by the OS, in some operating systems, in particular Windows, the have very distinct implementations of the TCP stack, so the version can be identifies by sending special TCP packets and see, how the server reacts. Even without dedicated countermeasures, some obstacles can make fingerprinting difficult in practice, a packet can be modified while in transit, also filtering devices may change one or several field values of a packet. 
+
+
 
 \subsection{\textbf{Attacking Internet Protocols}}
 
 \subsubsection{\textbf{SYN Flooding}}
-
+In a \emph{SYN flooding} attack, the adversary sends a large number of SYN packets (the first message in the TCP handshake protocol) to the remote hose and never acknowledge any of the replies, this way, the remote host accumulates more SYN packages than it can handle and this is a typical DoS (Denial-of-service) attack. \\
+A technical solution is to use the SYNcookie and don't keep a copy of the incoming SYN packet, but hashed version of it, so sessions do not need to be kept half-open.
+\vspace{0.5cm}
 \subsubsection{\textbf{Smurfing}}
-
+\label{smurf}
+In a \emph{smurfing} attack, a vulnerability of the ICMP (Internet Control Message Protocol) is exploited, a user can send an echo packet to a remote host in order to check, if the host is alive. In a smurfing attack, the adversary constructs a packet with the source address forged to be that of the attacked computer and to send it to a number of other hosts.
+The other hosts will respond by sending a packet to the target, if enough hosts respond, the target computer will receive more packets, than it can handle. 
+\vspace{0.5cm}
 \subsubsection{\textbf{DDoS Attacks}}
-
+In \emph{distributed denial-of-service} (DDoS) attacks, an adversary takes over a large number of machines and installs custom attack software on them, at a pre-determined time or on a signal, the software activates and starts bombarding the target machine with messages. 
+\vspace{0.5cm}
 \subsubsection{\textbf{Spoofing}}
+\emph{Spoofing} attacks combine some of the ideas, which are used in the previously described attacks, an adversary can use a DoS attack to take a web server, the adversary now can attempt to initiate a connection to a user and can send messages in persona of the web server. The response of the user will be, however, directly to the web server. \\
+The best way to detect a spoofing attack is to monitor the replay to the SYN+ACK packet, if the host is still alive, it will return a NACK, which can be used to identify this type of attack. 
 
 \subsection{\textbf{Trojans, Viruses, Worms and other malicious code}}
+A trojan, virus or a worm is essentially a piece of malicious code or software, roughly spoken, a \textbf{Trojan} is a program doing something malicious such as stealing passwords, a \textbf{worm} is a program, that replicates and a \textbf{virus} is a worm, that replicates by attaching itself to other programs. 
 
+
+\vspace{0.5cm}
 \subsubsection{\textbf{Taxonomy of Malicious Programs}}
-
+Malicious programs can be divided into two categories, those that need a host program and those, who don't. In the first category fall \emph{trap doors, logic bombs, Trojan horses} and \emph{viruses}. 
+In the second category fall \emph{worms} and \emph{zombies}. 
+\vspace{0.5cm}
 \subsubsection{\textbf{Trap doors}}
-
+\label{trapd}
+A trap door is a secret entry point into a program, this technique has been used legitimately for many years by programmers to debug and test programs. Such a trap door can be a part of the code that recognizes some special sequence for example. 
+\vspace{0.5cm}
 \subsubsection{\textbf{Logic Bombs}}
-
+A logic bomb is some code in a program that is set to detonate, when certain conditions are met. Examples of such conditions are the presence or absence of certain files, date or a particular user. Once activated, a logic bomb may cause a machine halt, delete files or other stuff.
+\vspace{0.5cm} 
 \subsubsection{\textbf{Zombies}}
-
+A zombie is a program, that takes over a computer, which is attached to the internet, to launch attacks that are difficult to trace to the creator of the zombie, they are often used in DDoS attacks. 
+\vspace{0.5cm}
 \subsubsection{\textbf{Viruses and Worms}}
+A virus is a program, that infects other programs by modifying them. A virus or worm typically consist of two components, a \textbf{replications mechanism} and a \textbf{payload}. A simple replication mechanism is for example, when a worm makes a copy of itself wherever it runs. A trigger activates the payload. \\
+Viruses and worms typically go through 4 phases during their lifetime
+\label{virusphase}
+\begin{itemize}
+\item \textbf{dormant phase}: virus is idle
+\item \textbf{propagation phase}: the virus infects other programs
+\item \textbf{triggering phase}: virus is activated
+\item \textbf{execution phase}: virus performs its function
+\end{itemize}
+\label{viruses}
+There are \textbf{parasitic viruses} (attach themselves to executables and replicate), \textbf{Memory-resident viruses} (reside in main memory, infect every program, that executes), \textbf{Boot sector viruses} (infect MBR), \textbf{Stealth viruses} (hide from detection) and \textbf{Polymorphic viruses} (mutate with every infection). \\
+There are different types of worms as well, in \textbf{Email}, \textbf{Remote Exectuion} (worms execute a copy of themselves on another system) and \textbf{Remote Login} (worms log onto remote systems as user and copy themselves from one system to the other). \\
+\textbf{Countermeasures} against viruses and worms consist mainly of using antivirus software, that investigates programs for known strings of viruses. Another possibility is to keep a checksum of the original executable and check, if it changed over time, but this can be easily fooled. 
+
 
 \subsection{\textbf{Intrusion Detection and Firewalls}}
-
+In principle, a \textbf{firewall} tries to actively prevent attacks using fixed policies, whereas an \textbf{intrusion detection system} (IDS) tries to detect attacks, modern IDSs play even an active role and try to block attacks as they happen. 
+\vspace{0.5cm}
 \subsubsection{\textbf{Firewalls}}
+\label{firewall}
+A firewall is the last line of defense of a protected network against an untrusted network. As such, a firewall is a process, that filters all traffic between a protected and less trustworthy network, this is done according to a security policy. 
+Thus, a firewall does not provide more security, as it is defined from the outside. A firewall consists of
+\begin{itemize}
+\item \textbf{Packet Filtering}: Inspect the header information of each packet, it can be used for \emph{source/destination level filtering}. Advanced filtering rules, such as checking IP options, fragment offset, etc. can prevent even more sophisticated attacks. 
+\item \textbf{Application Gateways}: Applications used to filter connections is called \emph{proxy service}, while the host running the host service is called an \emph{application gateway}. Traffic control allows observing and filtering the contents of particular services, it is more secure than pure packet filters, disadvantages include, that specialized proxies and clients are needed and its harder to adapt to newer technologies.
+\item \textbf{Circuit-Level Gateways}: A \emph{circuit-level gateway} relays TCP connections but does no extra processing or filtering of the protocol. If for example a website is requested, the firewall records it before passing it on to the web server and then compares the result from the web server, if it is the desired page. 
+\end{itemize} 
 
+\vspace{0.5cm}
 \subsubsection{\textbf{Intrusion Detection Systems}}
-
+Intrusion detection tries to find out abnormal behaviour, either using statistical methods, or to use rule-based anomaly detection, which involves defining a set of rules, that define proper behaviour, modern approaches even use neural networks to detect abnormal behaviour. \\
+\textbf{Logfile monitors} are the simplest example of a host-based IDS, it attempts to detect and investigate intrusions by inspection log files of a system, incidents can only be detected after it occured. \\
+\textbf{Integrity Monitors} watch key system structures such as system files or registry keys for change. When using such a monitor, it is necessary to start from a known safe baseline.\\
+\textbf{Signature Matchers} are somewhat like anti-virus software, it tries to detect attacks based on known attack signatures. \\
+\textbf{Anomaly Detectors} establish a baseline of a normal system or network activity and produce an alert, when a deviation from the norm occurs. \\
+\textbf{General Problems with IDSs} is, that new exploit, which aren't in any database, are difficult to handle and network IDSs have to deal with a lot of data. \\
+\textbf{Quality of an IDS} can be measured by its sensitivity, its specificity and its accuracy. The \emph{sensitivity} is defined as the fraction of intrusions that are detected by the IDS. The \emph{specificity} is defined as the fraction of no intrusions, that are detected by the IDS and the \emph{accuracy} is defined as the proportion of all IDS results, which are correct, therefore there is always a trade-off between sensitivity and specificity. \\
+\textbf{Circumventing IDSs} can happen, if packets are fragmented, the IDS will try to reassemble all fragmented packets for analysis, which makes the process less accurate. Another way to fool the IDS is to spoof the sequence number that the network IDS sees. 
 
 
 \subsection{\textbf{Review Exercises}}
 \subsubsection{\textbf{What is social engineering?}}
-
+Trying to persuade a person to give away their personal data by themselves by impersonating known people by gaining access to their accounts or similar attacks.
 \subsubsection{\textbf{What are the goals of social engineering?}}
+\begin{itemize}
+\item Physical access
+\item Remote access credentials
+\item Confidential information
+\item Violation of other security controls
+\end{itemize}
 
 \subsubsection{\textbf{What is OS Fingerprinting?}}
-
+OS Fingerprinting describes a technique, where the adversary tries to find out which version of an OS the user is running, to attack specific weaknesses of this OS.
 \subsubsection{\textbf{What is TCP stack fingerprinting}}
-
+The TCP stack is differently implemented on different operating systems, so by sending specific packets, an adversary can find out more about the OS by listening to the answer of the system.
 \subsubsection{\textbf{What is accomplished by a smurfing attack?}}
+Shown in (\ref{smurf}).
 
 \subsubsection{\textbf{What is a trap door?}}
-
+Shown in (\ref{trapd}).
 \subsubsection{\textbf{What are the four phases of a virus?}}
-
+Shown in (\ref{virusphase}).
 \subsubsection{\textbf{What types of viruses can you distinguish?}}
-
+Shown in (\ref{viruses}).
 \subsubsection{\textbf{What is a firewall?}}
-
+Shown in (\ref{firewall}).
 \subsubsection{\textbf{What types of intrusion detection systems can you distinguish?}}
+\begin{itemize}
+\item \textbf{Logfile monitors}: inspects logfiles
+\item \textbf{Integrity monitors}: watches key system structures like registry
+\item \textbf{Signature matchers}: detect attacks on known signatures
+\item \textbf{Anomaly detectors}: establish baseline and react to change
+\end{itemize}
 
 
 
 
-
+\pagebreak
 
 \section{\textbf{IMPLEMENTATION SECURITY}}
+
+\subsection{\textbf{Implementation Attacks and Countermeasures}}
+
+\subsection{\textbf{Passive Implementation Attacks}}
+\vspace{0.5cm}
+\subsubsection{\textbf{Types of Information Leakage}}
+\vspace{0.5cm}
+\subsubsection{\textbf{Simple Side-Channel Attacks}}
+\vspace{0.5cm}
+\subsubsection{\textbf{Differential Side-Channel Attacks}}
+
+\subsection{\textbf{Active Implementation Attacks}}
+\vspace{0.5cm}
+\subsubsection{\textbf{Fault Attacks}}
+\vspace{0.5cm}
+\subsubsection{\textbf{Other attacks}}
+\vspace{0.5cm}
+\subsubsection{\textbf{Preventing fault attacks}}
+
+
+\subsection{\textbf{Software Security}}
+\vspace{0.5cm}
+\subsubsection{\textbf{Buffer Overflow}}
+\vspace{0.5cm}
+\subsubsection{\textbf{Smashing the Stack}}
+\vspace{0.5cm}
+\subsubsection{\textbf{Heap Overflows}}
+\vspace{0.5cm}
+\subsubsection{\textbf{Preventing Buffer Overflows}}
+
+
+\subsection{\textbf{Java Security}}
+\vspace{0.5cm}
+\subsubsection{\textbf{Java Sandbox}}
+\vspace{0.5cm}
+\subsubsection{\textbf{Java Cryptographic Architecture}}
+
 \subsection{\textbf{Review Exercises}}
 
 

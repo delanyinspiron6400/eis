@@ -868,47 +868,137 @@ Shown in (\ref{firewall}).
 \pagebreak
 
 \section{\textbf{IMPLEMENTATION SECURITY}}
-
+Most systems, which have been broken in practice, have been broken because of their insecure implementation, errors there have always been a pain for both developer and end users. 
 \subsection{\textbf{Implementation Attacks and Countermeasures}}
+In the traditional scenario, two entities secure their communication by some mathematical function, namely the cryptographic algorithm. The adversary is assumed to have knowledge about this mathematical function and some plain- and ciphertext pairs. Despite the proofs for security for any cryptographic algorithm, they are still vulnerable to a number of attacks, very dangerous attacks are for example \emph{side-channel attacks}. \\
+
 
 \subsection{\textbf{Passive Implementation Attacks}}
+Passive attacks were published in an article, where the attack described there, required an attack to be able to simulate or predict the timing behaviour of the attacked device rather accurately, another method described talked about, how the usage of power consumption information can be used to determine the secret key. 
 \vspace{0.5cm}
 \subsubsection{\textbf{Types of Information Leakage}}
+
+\begin{itemize}
+\item \textbf{Execution Time Leakage}: Often, a device takes slightly different amounts of time to execute an algorithm, this can be caused by differing input data that might cause different amounts of time for execution, performance optimizations and branching instructions. 
+This is hard to track, in many modern processors and even on smart cards, instructions can be cached, so the execution time relates more to other influences. Countermeasures are easy to implement. 
+\item \textbf{Power consumption leakage}: Most commonly used cryptographic devices are implemented in CMOS logic, when a circuit is clocked, the circuit gates change their states, this leads to charging and discharging of internal capacitors and results in a current flow which is measurable outside the device. Power analysis attacks are the most popular attacks at the time, because really simple and effective. 
+\item \textbf{Electromagnetic radiation leakage}: The same charging and discharging creates also a electromagnetic (EM) field, which can be measured. \emph{Direct emanations} (Ausstrahlung) are caused by intentional current flow as a result of the execution of the algorithm. \emph{Unintential emanations} are cause by the miniaturization and complexity of modern CMOS devices. EM attacks are becoming more and more popular, because a high amount of information can leak in this side-channel. 
+\item \textbf{Error Message Leakage}: An error message attack usually targets a device implementing a decryption scheme, there is feedback from the device to tell, wether or not the message has been successfully decrypted, if the adversary now can reason, why this failed, he might gain insight into the algorithm. 
+\item \textbf{Combining Side-Channels}: Timing attacks can suffer from the difficulty of obtaining precise measurements, power measurements lead directly and more precisely to timing information and can be combined with the timing attacks. 	 
+\end{itemize}
 \vspace{0.5cm}
 \subsubsection{\textbf{Simple Side-Channel Attacks}}
+A \textbf{trace} refers to a measurement taken for one execution of the attacked cryptographic operation, in a simple side-channel attack, only one measurement is used to gain information about the secret key. Such an attack typically targets implementations, which use key dependent branching. \\
+\textbf{Symmetric Ciphers}\\
+a special class of simple power-analysis attacks are the so called \emph{Hamming weight attacks}, which exploit a strong relationship between the Hamming weight of the secret key and the power-consumption trace, for this type of attack it is vital, that the implementations based on relatively small data-words, like in 8-bit implementations. \\
+To counteract the type of simple power-analysis attack, a designer has to assure, that the Hamming Weight information leaked does not correlate with the intermediate values processed. This can be achieved by special logic or by masking the values. \\
+\textbf{Asymmetric Ciphers} \\ 
+If a \emph{multiplication of a known and a secret value} has to be calculated, then a simple side-channel attack is theoretically possible, but unlikely to work in practice. An \emph{exponentiation of a known with a secret value} is also in principle vulnerable to simple side-channel attacks. Unprotected \emph{Scalar multiplications} of a known elliptic curve point by an unknown skalar are highly vulnerable. \\
+Attacks can be counteracted by switching multiplier and multiplicand.
+
 \vspace{0.5cm}
 \subsubsection{\textbf{Differential Side-Channel Attacks}}
-
+Differential side-channel attacks exploit the correlation between the processed data and the instantaneous side-channel leakage of the attacked cryptographic device. Those correlations are usually small, so statistical methods have to be used. \\
+In a differential side-channel attack the output of the real physical device and the output of a hypothetical model of the device are being compared. Only if the hypothetical key equals the real key, the outputs correlate. 
+So by comparing the two outputs, an attacker can determine the secret key. 
 \subsection{\textbf{Active Implementation Attacks}}
+In a passive attack, the attacker only eavesdrops on some side-channel information, which is analysed afterwards to reveal some secret information. An \textbf{active attack} involves the attacker, that takes an \emph{active} part in the attack, the assumption is made, that the attacker is able to somehow devate the device from its normal behaviour and then tries to gain additional information by analysing the reactions. Some passive techniques seen in the previous chapter can be used to determine those reactions, like modifying some internal data used by the device. 
 \vspace{0.5cm}
 \subsubsection{\textbf{Fault Attacks}}
+When an attacker has physical access to a cryptographic device, he may try to force it to malfunction. 
+A fault attack is an attack, in which information about the message or the secret key is leaked from the output of erroneous computations, this kind of attack can be applied to both symmetric and asymmetric cryptosystems. 
+\begin{itemize}
+\item \textbf{Spike attacks} work by deviating the external power supply more than tolerated by the device
+\item \textbf{Glitch attacks} are similar to spike attacks, but target the clock contact of the integrated circuit
+\item \textbf{Optical attacks} work by focusing flash-light on the device on order to set or reset bits
+\end{itemize}
+\textbf{Introducing faults in the secret key of asymmetric schemes}: the idea is to flip one bit of the secret key and to use the erroneous computation of the device to get the value of this bit. \\
+\textbf{Introducing faults in registers}: The idea is to swap exactly one bit of a random value $r$, while the prover is waiting for the challenge, several such erroneous computations are used to recover the secret key. \\
+\textbf{Random faults}: This is the most powerful attack, here, a random error occurs during some step of computation and the erroneous output completely reveals the secret key. \\
+\textbf{Fault attacks against elliptic curve cryptosystems}: The idea is, to somehow modify the point involved in the scalar multiplication step, in such a way, that the resulting point is on a cryptographically weak curve, where we can solve the discrete logarithm problem and find the secret key. \\
+\textbf{Fault attacks against symmetric cryptosystems}: The algebraic properties of the asymmetric cryptosystems are used. 
+
+
 \vspace{0.5cm}
 \subsubsection{\textbf{Other attacks}}
+The problem of public key validation can also be exploited, it has been demonstrated, that attacks can be mounted against some elliptic curve based scheme, if the receiver of an elliptic curve point does not check that the point lies on the right curve, this shows the importance of validating received values. 
 \vspace{0.5cm}
 \subsubsection{\textbf{Preventing fault attacks}}
-
+Countermeasures include \textbf{double computation} (needs double the time and doesn't protect against permanent faults), \textbf{checking the output} (can be done efficiently, however it is assumed, that device contains whole public key) and \textbf{randomization} (here random bits are introduced into the computation). 
 
 \subsection{\textbf{Software Security}}
+Wheras implementation attacks are based on the fact, that a careless implementation can lead to side-channel and to vulnerability against fault attacks, software security problems typically arise from simple programming errors. 
+
 \vspace{0.5cm}
 \subsubsection{\textbf{Buffer Overflow}}
+A \emph{buffer} is a contiguous block of computer memory, that holds information and a buffer overflow deliberately enters more data into the buffer, than the buffer is supposed to handle. Problems arise in C and C++, because both don't do any form of boundary checking. 
 \vspace{0.5cm}
 \subsubsection{\textbf{Smashing the Stack}}
+If a program needs to store information, the information is \emph{pushed} onto the stack with the LIFO principle. 
+A stack consists of logical stack frames, a stack frame contains the parameters to a function, its local variables and data necessary to recover the previous stack frame. The \emph{stack pointer} points to the top of the stack and the \emph{frame pointer} to a fixed location within a frame. \\
+When an attacker overflows a buffer on the stack, the buffer will toward the return address, the goal of the attacker is now to change the return address, if malicious code is located at that new address, it is executed with the same privileges as the application. 
 \vspace{0.5cm}
 \subsubsection{\textbf{Heap Overflows}}
+The \textbf{heap} is memory, that is dynamically allocated for storing variables, in a heap overflow, the attacker tries to overwrite critical variables such as passwords, filenames etc. 
+The difference to a stack overflow is, that the heap overflow tries to increase the level of system privilege. 
 \vspace{0.5cm}
 \subsubsection{\textbf{Preventing Buffer Overflows}}
-
+Always check bounds before writing to an array and use functions, that limit the number of input characters
 
 \subsection{\textbf{Java Security}}
+In languages like C, it is solely up to the programmer to take care of malicious input data, that can cause buffer overflows or other problems. In Java, there are two major concepts, which are \emph{Sandbox} and \emph{JCA} that are important for implementing security related applications. 
 \vspace{0.5cm}
 \subsubsection{\textbf{Java Sandbox}}
+Java provides a customizable sandbox, in which Java programs run, a program can do anything within the boundaries of its sandbox, the sandbox for untrusted Java applets is supposed to prohibit
+\begin{itemize}
+\item Reading or writing to the local disk
+\item Making a network connection to any host, except the host from which the applet came
+\item Creating a new process
+\item Loading a new dynamic library and directly calling a native method
+\end{itemize}
+
+The security of the sandbox depends on the security of the Java Virtual machine, which ensures Type-safe reference casting, structured memory access (no pointer arithmetic), automatic garbage collection, array bounds checking and null reference checking. 
+
+
 \vspace{0.5cm}
 \subsubsection{\textbf{Java Cryptographic Architecture}}
+The \emph{Java Cryptographic Architecture (JCA)} is a framework for accessing and developing cryptographic functionality for the Java platform, it is designed for Implementation independence and interoperability and also Algorithm independence and extensibility. \\
+Implementation independence in the JCA is achieved by using a \emph{provider}-based architecture, who refers to a set of packages, that implement certain cryptographic services, a program may simply request a particular object and get an implementation from one of the installed providers. \\
+Examples for engine classes are
+\begin{itemize}
+\item MessageDigest
+\item Signature
+\item KeyPairGenerator
+\item KeyFactory
+\item CertificateFactory
+\item KeyStore
+\item AlgorithmParameters
+\item AlgorithmParametersGenerator
+\item SecureRandom
+\end{itemize}
+An engine class provides the interface to the functionality of a specific type of cryptograhpic service and provides a certain API. 
+
 
 \subsection{\textbf{Review Exercises}}
+\subsubsection{\textbf{What are active and passive implementation attacks, give examples!}}
 
+\subsubsection{\textbf{What types of side-channels that have been exploited in attacks do you know?}}
 
+\subsubsection{\textbf{What is a simple side-channel attack?}}
 
+\subsubsection{\textbf{What is a differential side-channel attack?}}
+
+\subsubsection{\textbf{Name some methods to insert faults in a cryptographic device.}}
+
+\subsubsection{\textbf{What can be done to counteract fault attacks?}}
+
+\subsubsection{\textbf{How does a buffer overflow attack typically work?}}
+
+\subsubsection{\textbf{What does it mean to smash the stack?}}
+
+\subsubsection{\textbf{What is the purpose of a sandbox?}}
+
+\subsubsection{\textbf{What are the goals of the JCA?}}
 
 
 

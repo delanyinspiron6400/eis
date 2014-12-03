@@ -877,7 +877,7 @@ In the traditional scenario, two entities secure their communication by some mat
 Passive attacks were published in an article, where the attack described there, required an attack to be able to simulate or predict the timing behaviour of the attacked device rather accurately, another method described talked about, how the usage of power consumption information can be used to determine the secret key. 
 \vspace{0.5cm}
 \subsubsection{\textbf{Types of Information Leakage}}
-
+\label{infoleak}
 \begin{itemize}
 \item \textbf{Execution Time Leakage}: Often, a device takes slightly different amounts of time to execute an algorithm, this can be caused by differing input data that might cause different amounts of time for execution, performance optimizations and branching instructions. 
 This is hard to track, in many modern processors and even on smart cards, instructions can be cached, so the execution time relates more to other influences. Countermeasures are easy to implement. 
@@ -888,6 +888,7 @@ This is hard to track, in many modern processors and even on smart cards, instru
 \end{itemize}
 \vspace{0.5cm}
 \subsubsection{\textbf{Simple Side-Channel Attacks}}
+\label{simpleside}
 A \textbf{trace} refers to a measurement taken for one execution of the attacked cryptographic operation, in a simple side-channel attack, only one measurement is used to gain information about the secret key. Such an attack typically targets implementations, which use key dependent branching. \\
 \textbf{Symmetric Ciphers}\\
 a special class of simple power-analysis attacks are the so called \emph{Hamming weight attacks}, which exploit a strong relationship between the Hamming weight of the secret key and the power-consumption trace, for this type of attack it is vital, that the implementations based on relatively small data-words, like in 8-bit implementations. \\
@@ -898,6 +899,7 @@ Attacks can be counteracted by switching multiplier and multiplicand.
 
 \vspace{0.5cm}
 \subsubsection{\textbf{Differential Side-Channel Attacks}}
+\label{diffside}
 Differential side-channel attacks exploit the correlation between the processed data and the instantaneous side-channel leakage of the attacked cryptographic device. Those correlations are usually small, so statistical methods have to be used. \\
 In a differential side-channel attack the output of the real physical device and the output of a hypothetical model of the device are being compared. Only if the hypothetical key equals the real key, the outputs correlate. 
 So by comparing the two outputs, an attacker can determine the secret key. 
@@ -905,6 +907,7 @@ So by comparing the two outputs, an attacker can determine the secret key.
 In a passive attack, the attacker only eavesdrops on some side-channel information, which is analysed afterwards to reveal some secret information. An \textbf{active attack} involves the attacker, that takes an \emph{active} part in the attack, the assumption is made, that the attacker is able to somehow devate the device from its normal behaviour and then tries to gain additional information by analysing the reactions. Some passive techniques seen in the previous chapter can be used to determine those reactions, like modifying some internal data used by the device. 
 \vspace{0.5cm}
 \subsubsection{\textbf{Fault Attacks}}
+\label{faultatt}
 When an attacker has physical access to a cryptographic device, he may try to force it to malfunction. 
 A fault attack is an attack, in which information about the message or the secret key is leaked from the output of erroneous computations, this kind of attack can be applied to both symmetric and asymmetric cryptosystems. 
 \begin{itemize}
@@ -924,6 +927,7 @@ A fault attack is an attack, in which information about the message or the secre
 The problem of public key validation can also be exploited, it has been demonstrated, that attacks can be mounted against some elliptic curve based scheme, if the receiver of an elliptic curve point does not check that the point lies on the right curve, this shows the importance of validating received values. 
 \vspace{0.5cm}
 \subsubsection{\textbf{Preventing fault attacks}}
+\label{counterfault}
 Countermeasures include \textbf{double computation} (needs double the time and doesn't protect against permanent faults), \textbf{checking the output} (can be done efficiently, however it is assumed, that device contains whole public key) and \textbf{randomization} (here random bits are introduced into the computation). 
 
 \subsection{\textbf{Software Security}}
@@ -931,9 +935,11 @@ Wheras implementation attacks are based on the fact, that a careless implementat
 
 \vspace{0.5cm}
 \subsubsection{\textbf{Buffer Overflow}}
+\label{buffover}
 A \emph{buffer} is a contiguous block of computer memory, that holds information and a buffer overflow deliberately enters more data into the buffer, than the buffer is supposed to handle. Problems arise in C and C++, because both don't do any form of boundary checking. 
 \vspace{0.5cm}
 \subsubsection{\textbf{Smashing the Stack}}
+\label{smashstack}
 If a program needs to store information, the information is \emph{pushed} onto the stack with the LIFO principle. 
 A stack consists of logical stack frames, a stack frame contains the parameters to a function, its local variables and data necessary to recover the previous stack frame. The \emph{stack pointer} points to the top of the stack and the \emph{frame pointer} to a fixed location within a frame. \\
 When an attacker overflows a buffer on the stack, the buffer will toward the return address, the goal of the attacker is now to change the return address, if malicious code is located at that new address, it is executed with the same privileges as the application. 
@@ -949,6 +955,7 @@ Always check bounds before writing to an array and use functions, that limit the
 In languages like C, it is solely up to the programmer to take care of malicious input data, that can cause buffer overflows or other problems. In Java, there are two major concepts, which are \emph{Sandbox} and \emph{JCA} that are important for implementing security related applications. 
 \vspace{0.5cm}
 \subsubsection{\textbf{Java Sandbox}}
+\label{javasand}
 Java provides a customizable sandbox, in which Java programs run, a program can do anything within the boundaries of its sandbox, the sandbox for untrusted Java applets is supposed to prohibit
 \begin{itemize}
 \item Reading or writing to the local disk
@@ -962,6 +969,7 @@ The security of the sandbox depends on the security of the Java Virtual machine,
 
 \vspace{0.5cm}
 \subsubsection{\textbf{Java Cryptographic Architecture}}
+\label{jca}
 The \emph{Java Cryptographic Architecture (JCA)} is a framework for accessing and developing cryptographic functionality for the Java platform, it is designed for Implementation independence and interoperability and also Algorithm independence and extensibility. \\
 Implementation independence in the JCA is achieved by using a \emph{provider}-based architecture, who refers to a set of packages, that implement certain cryptographic services, a program may simply request a particular object and get an implementation from one of the installed providers. \\
 Examples for engine classes are
@@ -981,46 +989,221 @@ An engine class provides the interface to the functionality of a specific type o
 
 \subsection{\textbf{Review Exercises}}
 \subsubsection{\textbf{What are active and passive implementation attacks, give examples!}}
-
+In a \emph{passive attack}, the attacker tries to read information out of the side-channels during the encryption or decryption phase, a possibility is to measure the power consumption and compare it to a simulated power consumption.\\
+In an \emph{active attack}, the attacker actively changes parts of the device, trying to produce errors to find out more about the encryption. An example would be spike attacks, where the current is being heightened for a short amount of time to produce an error. 
 \subsubsection{\textbf{What types of side-channels that have been exploited in attacks do you know?}}
-
+Shown in (\ref{infoleak}).
 \subsubsection{\textbf{What is a simple side-channel attack?}}
-
+Shown in (\ref{simpleside}).
 \subsubsection{\textbf{What is a differential side-channel attack?}}
-
+Shown in (\ref{diffside}).
 \subsubsection{\textbf{Name some methods to insert faults in a cryptographic device.}}
-
+Shown in (\ref{faultatt}).
 \subsubsection{\textbf{What can be done to counteract fault attacks?}}
-
+Shown in (\ref{counterfault}).
 \subsubsection{\textbf{How does a buffer overflow attack typically work?}}
-
+Shown in (\ref{buffover}).
 \subsubsection{\textbf{What does it mean to smash the stack?}}
-
+Shown in (\ref{smashstack}).
 \subsubsection{\textbf{What is the purpose of a sandbox?}}
-
+Shown in (\ref{javasand}).
 \subsubsection{\textbf{What are the goals of the JCA?}}
+Shown in (\ref{jca}). 
 
+\pagebreak
 
 
 \section{\textbf{OPERATING SYSTEM SECURITY}}
+With the advent of multi-user systems, the first step in using a computer is to log into the computer, here the operating system tries to identify the user, this process is called \emph{user authentication} and is the first of all security mechanisms incorporated into an operating system.
+\subsection{\textbf{Authentication and Access Control}}
+\emph{Entitiy authentication (or identification)} is the process whereby on party is assured of the identity of a second party involved in a protocol. This protocol is a real-time process, it assures that the party being authenticated is operational at the time of the protocol execution. \\
+Authentication protocols are typically based on one of three principles
+\begin{itemize}
+\item Something known, like a password or PIN
+\item Something possessed, like a smart card or a password generator
+\item Something inherent, like a fingerprint or voice
+\end{itemize}
+
+\vspace{0.5cm}
+\subsubsection{\textbf{Password based Authentication}}
+A \emph{password} is typically a string of at least eight characters, which is associated with one user, it serves as a shared secret between the user and the system. 
+Whenever a user attempts to access the system, he is required to state his identity and reveal his password. The system matches the data against its own data and this demonstration of  knowledge of this secret is accepted by the system as corroboration of the entities identity.
+The password is not display while being entered and shouldn't be send in clear over an insecure line. \\
+\textbf{Storing passwords}: \\
+A naive approach would be to store user passwords in plaintext in a \emph{password file}, which should be read and write protected against other users.
+A cryptographic solution to this problem are \emph{encrypted password files}, in this approach, not the cleartext passwords are stored, but the result of a one-way function of each user password, to verify a password, the system computes the hash and compares this against the stored entry of this user. 
+This file also needs write protection. \\
+\textbf{Guessing passwords} \\
+If the password file is not the weakest part of the system, then guessing the password is the next logical step for an attacker. An \emph{exhaustive} search requires an attacker to try all possible sequences of admissible characters of a certain length, this can be shut down by restricting the number of logins. \\
+It is also possible to improve the chance of success by searching the space in order of decreasing probability, the most likely passwords first. Most passwords can be found in intermediate dictionaries with only 150.000 words, attacks of this type are called \emph{dictionary attacks}. \\
+A method, to make passwords even more secure, is to use \emph{salted password files}. Each password, upon initial entry, is augmented with a t-bit random string called the salt before applying the one-way function. both the hashed and the salt are recorded in the password file, this makes a dictionary attack more difficult, because it now must contain all $2^t$ variations of the hash of each trial password. \\
+\textbf{Weak vs strong authentication} \\
+A weakness of schemes using fixed, reusable passwords is the possibility, that an attacker learns a user's password by observation somehow. Therefore such a fixed password is a \emph{weak authentication scheme}. \\
+One-time password schemes, such as schemes, where each user is given a hash, are schemes, which go towards strong authentication. \\
+So called \emph{challenge-response protocols} belong to the class of \emph{strong authentication schemes}, in this mechanism, one entity proves its identity to another entity by demonstrating knowledge of a secret known to be associated with that entity, without revealing the secret itself during the protocol. 
+This is done by providing a response to a time-variant challenge, where the response depends on both the entity's secret and the challenge. This challenge is typically a number chosen by the verifier at the beginning of the protocol. 
+
+
+
+\subsection{\textbf{Windows Security}}
+\subsubsection{\textbf{User Authentication}}
+Windows 2000 and its successors provide a secure login with anti-spoofing mechanism, spoofing refers to an attacker writing a program, that displays a login prompt on screen and records the user name and password when typed in. Windows prevents such attacks by instructing users to hit CRTL-ALT-DELETE (known as the Secure Attention Sequence) to log in, this sequence is always captured by the keyboard driver and invokes a system program, the genuine login screen. 
+The component of Windows, that handles authentication, is called the \textbf{authentication authority}, besides its central role during login, it manages network resources and policies and stores all user profiles. The default protocol used is \textbf{Kerberos}, and there are four basic login types: \emph{interactive login}(typical user login), \emph{non-interactive login}, \emph{batch} and \emph{service login}.\\
+An interactive authentication starts, whenever a user initiates an SAS sequence, the Winlogon service then calls the GINA (Graphical Identification and Authentication) module, which is responsible for displaying the login interface, extracting the users's credentials and passing them to the LSA (Local Security Authority). The LSA chooses an authentication protocol and interacts with the local security database. \\
+\textbf{Kerberos}\\
+The Kerberos protocol allows two communication parties, to communicate privately with the help of a trusted third party (TTP), acting as a key distribution center, it is based on symmetric-key cryptography. 
+Integrating Kerberos authentication to Windows brings several advantages, it is a rather scalable architecture, many network resources should be protected from not-legitimate users, Kerberos supports \emph{single sign-on}, where the user only needs to be authenticated once. 
+The protocol works like that: \\
+Alice wants to communicate with Bob, where she needs to share a secret key, so she uses a KDC (Key Distribution Center) to establish a shared secret with Bob. So Alice contacts the KDC and requests a shared key with Bob, KDC verifies her identity and the authentication is granted. 
+The credentials themselves consist of a shared secret, which is encrypted with the secret key, that KDC and Alice share, and a so-called \emph{ticket}, which is encrypted under the secret key, that Bob shares with the KDC. 
+\vspace{0.5cm}
+\subsubsection{\textbf{Access Control}}
+Access control mechanisms mediate the access of users to files, processes, etc. A simple way of managing access rights are \emph{access control lists}, where a list of users and their privileges is stored for each file. \\
+In Windows, every user is identifies by a secure ID (SID), which is an almost random number, that is intended to be unique worldwide. Furthermore, each process has a so-called \emph{access token}, that contains its SID and additional information such as privileges. \\
+Another concept used in windows is the \emph{security descriptor}. Ever object has one, that defines who may perform which operations on it. Kerberos is also used for access control. 
+
+\vspace{0.5cm}
+\subsubsection{\textbf{Encrypted File System}}
+\label{efs}
+Windows has an option to encrypt files, it can be invoked by marking certain directories as encrypted, which causes all files in them to be encrypted and new files moved there to be encrypted as well. \\
+The encryption is performed by driver called \emph{encrypting file system} (EFS), which resides between the actual file system and the user process. When a user asks to perform this encryption, a random key is generated and used to encrypt a file block-wise. For each file, a separate key is chosen, which are stored encrypted on the hard disk. The problem, where to store private or secret keys becomes apparent in this application. 
+\vspace{0.5cm}
+\subsubsection{\textbf{Windows Attacks}}
+There are several prominent attacks on Windows, including SMB Attack and Help Center Attack (starting on page 77 of the script).
+\subsection{\textbf{Unix Security}}
+Unix and all Linux variations, use similar security mechanisms.
+\vspace{0.5cm}
+\subsubsection{\textbf{User Authentication}}
+\label{unixauth}
+When a user logs in, the \emph{login program} request user name and password, the password gets hashed and matches against the corresponding entry in the database. For the encryption algorithm, a minor modification of DES is used, a salting mechanism is included as well. The login process starts as process which is SETUID root, after a successful login, \emph{login} changes its UID and GID (User and Group ID) to the users UID and GID. 
+\vspace{0.5cm}
+\subsubsection{\textbf{Access Control}}
+Each user has a unique \emph{user id}, user themselves can be organized into groups, which have group ids. Files, processes and other resources are marked with the UId and the GID of the owners. 9-bit numbers are used to represent access right, accesss categories include read, write and execute (or searchable for directories). \\
+A special user is the \emph{superuser (root)}, which has all rights, no matter what. 
+Since access control is based on the effective user Id, a process gains privilege by assigning a privileged user Id to its effective UId, and drops privilege by removing the privileged user ID from its effective UID. 
+Another protection bit is the SETUID, which is set for an executable, so the resulting process runs with the owner's permissions and not with the permissions of the user launching it. 
+\vspace{0.5cm}
+\subsubsection{\textbf{Unix attacks}}
+There are also some vulnerabilities in unix systems, can be found starting on page 79 of the script. 
+\subsection{\textbf{Improving Security}}
+There are several approaches possible to deal with security problems, the most natural one is of course to avoid programming flaws, which is infeasible at the moment. 
+Therefore it seems to be wise to have some mechanisms to update programs, that turned out to be problematic. Another way would be to limit the damage, a flawed program can make. 
+
+\vspace{0.5cm}
+\subsubsection{\textbf{Windows Update}}
+Especially for Windows operating systems it has become clear, that due to their complexity, flawless code cannot be expected. Therefore, windows comes with a nice update mechanism, that allows even uneducated users to obtain the relevant security updates in time. 
+\vspace{0.5cm}
+\subsubsection{\textbf{Sandboxing}}
+\emph{Sandboxing} is a popular technique for creating restricted execution environments, which can be used for running non-trusted programs. A sandbox limits, or reduces, the leve of access its applications have. \\
+Virtual machines can be used to provide runtime sandboxes, the Java virtual machine is an example, although it can only be used to run Java programs. 
+\vspace{0.5cm}
+\subsubsection{\textbf{Code Signing}}
+How can users trust code, that is published on the internet or somewhere else?
+The authenticity and integrity of code can be guaranteed by using standard cryptographic methods such as hash functions and digital signatures, by signing a piece of code, both the authenticity and the integrity of the code are protected.
+\vspace{0.5cm}
+\subsubsection{\textbf{Trusted Computing}}
+The trusted computing base is set of all hardware, software and procedural components in a computer, that enforce a security policy. Trusted computing is often associated with the activities of the TCG (Trusted computing Group), which is working on specifications that should ultimately lead to a trustworthy computer. This may not always be good, because such systems should counteract attacks against the user as well as attacks against venderos, it should, for example, block playing a copied DVD. 
+\vspace{0.5cm}
+\subsubsection{\textbf{Personal Firewalls}}
+Firewalls have been security measures that were installed mainly on a network sever in the past, but modern OS do incorporate so-called personal firewalls on their clients, this should be an advantage, because every user can limit the incoming data from the internet. 
+\vspace{0.5cm}
+\subsubsection{\textbf{Data Execution Prevention}}
+\emph{Data execution prevention} (DEP) is a set of hardware and software technologies, that perform addition checks on memory, to help protect against malicious code exploits. Both Intel and AMD have processors, which support data execution prevention in hardware, in this way, buffer overflow attacks might be successfully counteracted. 
+
+
+
+
+
+
 \subsection{\textbf{Review Exercises}}
 
+\subsubsection{\textbf{What is entity authentication or identification?}}
+It is the process, whereby one party is assured (through acquisition of corroborative evidence) of the identity of a second party involved in the protocol, and that the second has actually participated.
+\subsubsection{\textbf{What is meant by password based authentication?}}
+A password is the shared secret between an user and the operating system, if a user tries to access the system, he needs to enter the user name and password. 
+\subsubsection{\textbf{What is a dictionary attack?}}
+Brute-Force attacks take lots of time and effort. In order to increase efficiency of the attack, the attacker uses a dictionary as a source, because the probability of guessing a password this way is much greater. 
+\subsubsection{\textbf{What is the challenge-response principle?}}
+Challenge-response is a secure authentication process of a user using additional knowledge, a user gets a challenge, that he must complete to prove, that he knows certain information. 
+\subsubsection{\textbf{How does user authentication in Windows typicall work?}}
+A User hits CTRL-ALT-DELETE, which calls a system process and starts the genuine login process, if it is a local login, the LSA is called, gets the login data, chooses the authentication protocol and compares the data to the database. 
+\subsubsection{\textbf{What is the purpose of Kerberos?}}
+Kerberos is used to prevent "man in the middle" attacks, clients and servers have to authenticate with a KDC, a Kerberos server, that is used as a Key Distribution Center and ensures secure communication between the two. 
+\subsubsection{\textbf{What is an ACL and what is it used for?}}
+ACL stands for Access Control Lost and it controls the access to files, for every file there are the rights saved for every user. 
+\subsubsection{\textbf{How does the EFS work?}}
+Shown in (\ref{efs}).
+\subsubsection{\textbf{How does authentication in Unix systems typically work?}}
+Shown in (\ref{unixauth}).
+\subsubsection{\textbf{Name some attempts to improve operating system security!}}
+\begin{itemize}
+\item security updates
+\item sandboxing
+\item code signing
+\item trusted computing
+\item personal firewalls
+\item data execution prevention
+\end{itemize}
 
-
-
+\pagebreak
 
 
 \section{\textbf{PRIVACY}}
+
+\subsection{\textbf{Definitions of Privacy}}
+
+\subsection{\textbf{Privacy Enhancing Technologies}}
+\vspace{0.5cm}
+\subsubsection{\textbf{Mix Network}}
+
+\vspace{0.5cm}
+\subsubsection{\textbf{Crowds}}
+
+
+\vspace{0.5cm}
+\subsubsection{\textbf{Degrees of Anonymity}}
+
+
+\subsection{\textbf{PET for the Internet}}
+
+\subsubsection{\textbf{Anonymous Remailers}}
+
+\vspace{0.5cm}
+\subsubsection{\textbf{Cypherpunk Remailers}}
+
+\vspace{0.5cm}
+\subsubsection{\textbf{Eternity Service}}
+
+
+\vspace{0.5cm}
+\subsubsection{\textbf{PipeNet and Onion routing}}
+
+\vspace{0.5cm}
+\subsubsection{\textbf{Free Haven}}
+
+\vspace{0.5cm}
+\subsubsection{\textbf{Anonymizer}}
+
+
+
+
+
 \subsection{\textbf{Review Exercises}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{\textbf{Name three aspects of privacy}}
 
-%-----------------------------------------------------------
-%-
-%-  Appendix
-%-
-%-----------------------------------------------------------
-\section*{APPENDIX}
+\subsubsection{\textbf{What are the four basic principles that EU Directive on Data Protection is based on?}}
 
+\subsubsection{\textbf{What is the purpose of a mix network?}}
+
+\subsubsection{\textbf{Illustrate the basic idea of a mix network}}
+
+\subsubsection{\textbf{What is a crowd?}}
+
+\subsubsection{\textbf{What is the difference between anonymity and unlinkability?}}
+
+\subsubsection{\textbf{name the five degrees of anonymity}}
+
+\subsubsection{\textbf{What types of remailers do you know?}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -34,7 +34,7 @@
 %-----------------------------------------------------------
 \begin{abstract}
 
-This document should serve as a summary of the necessary information given in the lecture ``Einführung in die Informationssicherheit''
+This document should serve as a summary of the necessary information given in the lecture ``Einführung in die Informationssicherheit'' and should provide all the necessary information for the VO exam.
 
 \end{abstract}
 
@@ -1148,67 +1148,136 @@ Shown in (\ref{unixauth}).
 \pagebreak
 
 
-\section{\textbf{PRIVACY}}
 
+
+
+\section{\textbf{PRIVACY}}
+So-called \emph{privacy enhancing technologies} (PET) have been developed to provide some protection for users. These PET allow users to keep their identities hidden, when for example, sending email, posting to newsgroups or browsing the web. 
 \subsection{\textbf{Definitions of Privacy}}
+The definition of privacy  is given by Alan Westin
+\begin{center}
+\textit{Privacy is the claim of individuals, groups and institutions to determine for themselves, when, how and to what extent information about them is communicated to others. }
+\end{center}
+Privacy however, has several more aspects, there is \emph{territorial privacy}, which refers to protecting the close physical area surrounding a person, then there is the \emph{privacy of the person}, which refers to protecting a person against undue interference, such as physical searches or information violating his moral sense. And there is \emph{informational privacy}, which refers to controlling whether and how personal data can be gathered, stored, processed or selectively disseminated(verbreiten). 
+There are basic principles (such as the EU-Directive 95/46/EC on Data Protection), that need to be guaranteed, when personal data is collected or processed
+\begin{itemize}
+\item \textbf{Purpose specification and purpose binding}: personal data must be obtained for a specific and legitimate purpose and should not be used for anything different
+\item \textbf{Necessity of data collection and processing}: the collection and processing of personal data shall only be allowed, if it is necessary for the task.
+\item \textbf{Transparency}: The data subject's right to information, notification, objection and the right for correction erasure or blocking of incorrect or illegally stored data
+\item \textbf{Requirement of Security Mechanisms}: Requirement of adequate techincal and organizational security mechanisms to guarantee the confidentiality, integrity and availability of personal data. 
+\end{itemize}
 
 \subsection{\textbf{Privacy Enhancing Technologies}}
+\begin{center}
+\textit{PETs have been defined as a coherent system of measures, that protect privacy by eliminating or reducing personal data or by preventing unnecessary and/or undesired processing of personal data, all without losing the functionality of the data system.}
+\end{center}
+PETs are technologies to protect individuals and communities from casual surveillance and disruption. 
 \vspace{0.5cm}
 \subsubsection{\textbf{Mix Network}}
-
+\label{mix}
+The purpose of a mix is to hide the correspondents between the items in its input and those in its output, the order of arrival is hidden by outputting the uniformly sized items in lexicographically order batches. 
+To ensure, that the mix server cannot read the contents of incoming emails, they need to be encrypted, therefore, Alice prepares a message for delivery to bob by sealing it with the his public key, appending the address of bib and the sealing the result with the mix's public key. The encrypted message reaches Bob, although no mix is able to read the email and no outsider and neither Bob nor Alice can trace which path the message took through the mix, this is due to the fact, that the mixes batch messages and the addition of random numbers. 
+In order to be able to answer Alice's message, Bob needs some kind of untraceable return address from Alice, this  can be formed again as an encrypted string, which Alice can send with the message to Bob. Only Alice can decrypt the return message, because she created the keys.
 \vspace{0.5cm}
 \subsubsection{\textbf{Crowds}}
+\label{crowd}
+An approach for privacy on the internet is to use so-called \textbf{crowds}. In a crowd, users can hide their actions within the actions of many other users, in oder to execute web transactions in this model, a user joins a crowd of other users, the the user' request ist send to a random member of the crowd. That member can either submit the request directly to the destination server of forward it to another randomly chosen member. When the request is eventually submitted to the destination server, it is submitted by a random member. Therefor, it prevents the destination server form identifying the true initiator of the request, even crowd members cannot identify the initiator of the request, since the initiator is indistinguishable from a member, that simply forwards a request from another. This can obviously not protect a user, if the content of the web transaction reveals the identity to the server. \\
 
 
 \vspace{0.5cm}
 \subsubsection{\textbf{Degrees of Anonymity}}
-
+\label{degreeofano}
+In any communication, there are two parties, the sender and the receiver. \emph{Sender anonymity} means that the identity of the party sending the message is hidden, while the receiver might not be. \emph{Receiver anonymity} means, that the identity of the receiver is hidden, but the message and the sender might not be. \\
+\textbf{Unlinkability} of sender and receiver means, that though the sender and receiver can each be identified as participating in some communication, they cannot be identified as communicating with each other. 
+There are several degrees of anonymity
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\columnwidth]{images/diagrams/anonymity.jpg} 
+\end{figure}
+\begin{itemize}
+\item \textbf{Absolute privacy}: absolute sender privacy, that an attacker can in no way distinguish the situations in which a potential sender actually sent messages
+\item \textbf{Beyond suspicion}: A sender's anonymity is beyond suspicion, if though the attacker can see evidence of a sent message, the sender appears no more likely to be the originator of that message than any other potential sender
+\item \textbf{Probable innocence}: A sender is probably innocent, if, from the attackers point of view, the sender appear no more likely to be the originator than not to be the originator. So he may be more likely than other potential sender's, but it still appear at least likely, that the sender is not responsible
+\item \textbf{Possible innocence}: A sender is possibly innocent, if, from the attackers point of view, there is a nontrivial probability, that the real sender is someone else.
+\item \textbf{Provably exposed}: the identity of a sender is provably exposed, if the attacker cannot only identify the sender of a message, but also prove the identity of the sender to others.
+\end{itemize}
+Crowds provide sender anonymity against collaborating crowd members, in a group of collaborating mix servers, mixes do not provide sender anonymity but do ensure unlinkability. 
 
 \subsection{\textbf{PET for the Internet}}
 
 \subsubsection{\textbf{Anonymous Remailers}}
-
+Anonymous remailers are also known s "strip-headers-and-resend" remailers or type-0 remailers. When a user sends a message through the system, it was assigned a fake address as pseudonym, the headers on the original email would be removed and replaced by the fake header. Replies to the fake header would go to the server and would be forwarded back to the sender. 
+This service was shut down due to legal pressure. 
 \vspace{0.5cm}
 \subsubsection{\textbf{Cypherpunk Remailers}}
+Type-2, or "Mixmaster" remailers were developed because of security problems with type-1 remailers. Mixmaster remailers always use chaining and encryption and break each message into a number of fixed-size packets, which are transmitted separately through the Mixmaster chain. The exit node recombines the pieces and sends the result to the intended recipient. 
+
+
+
 
 \vspace{0.5cm}
 \subsubsection{\textbf{Eternity Service}}
-
+The eternity service promised the ability to publish documents that were uncensorable. In the implementation, the distributed nature of Usenet was used to provide the redundancy and resiliency required to defend against attempts to censor information. 
 
 \vspace{0.5cm}
 \subsubsection{\textbf{PipeNet and Onion routing}}
+A Service similar to remailer networks, but designed to provide anonymity protection for real-time communication. The additional difficulties imposed by the real-time requirement required significant additions in complexity over the remailer network. Both were never developed far. 
+
 
 \vspace{0.5cm}
 \subsubsection{\textbf{Free Haven}}
+Eternity service was a first attempt to provide a censorship free zone on the internet, Free Haven aims for similar goals.
+Another service, called Publius, put documents encrypted on many servers, the decryption key is split using a secret sharing scheme and distributed to the servers, a special URL is constructed, that contains the information to retrieve the encrypted document, find the shares of the key, reconstruct the decryption key and decrypt the document. 
+With Free Haven, the aims is also to provide content in such a manner, that adversaries would find it difficult to remove, it also provides better anonymity features for publishers. 
+
 
 \vspace{0.5cm}
 \subsubsection{\textbf{Anonymizer}}
-
+Anonymizer.com offers services including email and newsgroup access, as well as dial-up Internet access, it has a relatively simple architecture at the expense of protecting against a weaker thread model, which is sufficient for most consumers. 
 
 
 
 
 \subsection{\textbf{Review Exercises}}
 \subsubsection{\textbf{Name three aspects of privacy}}
+\begin{itemize}
+\item \textbf{territorial privacy}: refers to protecting the close physical area surrounding a person
+\item \textbf{privacy of the person}: refers to protecting a person against undue interferences, such as physical searches or information violating his moral sense
+\item \textbf{informational privacy}: refers to controlling whether and how personal data can be gathered, stored, processed or selectively disseminated
+\end{itemize}
 
 \subsubsection{\textbf{What are the four basic principles that EU Directive on Data Protection is based on?}}
+\begin{itemize}
+\item Purpose specification and purpose binding
+\item Necessity of data collection and processing
+\item Transparency
+\item Requirement of Security Mechanisms 
+\end{itemize}
 
 \subsubsection{\textbf{What is the purpose of a mix network?}}
-
+The purpose of a mix is to hide the correspondences between the items in its input and those in its output.
 \subsubsection{\textbf{Illustrate the basic idea of a mix network}}
-
+Shown in (\ref{mix}).
 \subsubsection{\textbf{What is a crowd?}}
-
+Shown in (\ref{crowd}).
 \subsubsection{\textbf{What is the difference between anonymity and unlinkability?}}
-
+Anonymity can be split into sender and receiver anonymity. \emph{Sender anonymity} means that the identity of the party sending the message is hidden, while the receiver might not be. \emph{Receiver anonymity} means, that the identity of the receiver is hidden, but the message and the sender might not be. 
+\textbf{Unlinkability} of sender and receiver means, that though the sender and receiver can each be identified as participating in some communication, they cannot be identified as communicating with each other. 
 \subsubsection{\textbf{name the five degrees of anonymity}}
-
+Shown in (\ref{degreeofano}).
 \subsubsection{\textbf{What types of remailers do you know?}}
+\begin{itemize}
+\item Anonymous Remailers
+\item Cypherpunk Remailers
+\item Mixmaster Remailers
+\end{itemize}
 
-
+\pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
+\section*{APPENDIX}
+Hopefully this document served you well while preparing for the VO exam in "Einführung in die Informationssicherheit". It was researched and compiled carefully and hopefully bugfree!
+\\ All the best and good luck,\\
+Martin
 
 
 
